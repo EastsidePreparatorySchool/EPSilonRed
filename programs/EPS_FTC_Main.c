@@ -1,8 +1,12 @@
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  none,     none)
+#pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
+#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop)
+#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
 #pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop, encoder)
 #pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop, encoder)
-#pragma config(Servo,  srvo_S1_C2_1,    servo1,               tServoNone)
-#pragma config(Servo,  srvo_S1_C2_2,    servo2,               tServoNone)
+#pragma config(Servo,  srvo_S1_C2_1,    servo1,               tServoStandard)
+#pragma config(Servo,  srvo_S1_C2_2,    servo2,               tServoStandard)
 #pragma config(Servo,  srvo_S1_C2_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_5,    servo5,               tServoNone)
@@ -15,16 +19,91 @@
 
 #include "EPS_JoystickDriver.c"
 
+void PlayNote (int index, float beats, float pause)
+{
+	PlayImmediateTone (((float)200*(pow(1.08333333,index))), (beats - pause)*25);
+	writeDebugStreamLine ("Freq: %f", ((float)300*(pow(1.08333333,index))));
+	if (pause > 0)
+	{
+		wait10Msec ((beats - pause) * 25);
+		ClearSounds();
+		wait10Msec (pause * 25);
+	}
+	else
+	{
+		wait10Msec (beats * 25);
+	}
+
+}
+
+void EPS_WeAreTheChampions (void)
+{
+	ClearSounds();
+	PlayNote (10, 4, 0.3);
+	PlayNote (9, 1, 0);
+	PlayNote (10, 1, 0);
+	PlayNote (9, 3, 0.3);
+	PlayNote (6, 3, 0);
+}
+
+void EPS_Housework (void)
+{
+	ClearSounds();
+
+	PlayNote (10, 0.5, 0.2);
+	PlayNote (10, 0.5, 0.2);
+	PlayNote (10, 0.5, 0.2);
+	PlayNote (10, 1, 0.2);
+	PlayNote (10, 0.5, 0.2);
+	PlayNote (8,1, 0.2);
+	PlayNote (11, 1, 0.2);
+}
+
+void MoveClaw (int amount)
+{
+	nMotorEncoder[motorA] = 0;
+	nMotorEncoder[motorB] = 0;
+	nMotorEncoderTarget[motorA]= abs(amount);
+	nMotorEncoderTarget[motorB]= abs(amount);
+
+	motor[motorA] = (amount >0 ? 20:-20);
+	motor[motorB] = (amount >0 ? 20:-20);
+
+	while (nMotorRunState[motorA] != runStateIdle || nMotorRunState[motorB] != runStateIdle)
+		{
+		//kill some time
+		}
+
+	motor[motorA] = 0;
+	motor[motorB] = 0;
+
+}
+
+
 void EPS_initialize ()
 {
 	// initialization after power up and before autonomus period
 	// we may put servos into a certain position etc. here
   // if we do antyhing here, don't for get to put the "robot moves during init" label on the robot!!!
+
+//	EPS_WeAreTheChampions ();
+
+//	nSyncedMotors = synchAB;
+//	nSyncedTurnRatio = -100;
+
+	MoveClaw(-20);
+	wait10Msec (100);
+	MoveClaw(20);
+
+
+
 }
 
 
 void EPS_autonomous ()
 {
+	EPS_Housework();
+
 	while (true)
   {
     // Get fresh raw joystick values for left stick
@@ -58,13 +137,13 @@ void EPS_autonomous ()
 }
 
 void EPS_driver_control ()
-	{
+{
 	float joy1x1;
 	float joy1y1;
 	float turn_slow_factor = 2;
 	float straight_slow_factor = 2;
 
-  motor[motorD] = 0;
+	motor[motorD] = 0;
   motor[motorE] = 0;
 
   while (true)
@@ -75,6 +154,22 @@ void EPS_driver_control ()
 
     joy1x1 = joystick.joy1_x1;
     joy1y1 = joystick.joy1_y1;
+    int joy2x2 = joystick.joy1_x2;
+
+    //int buttons = joystick.joy1_Buttons;
+    if(joy2x2 > 3)
+    {
+    //servo[servo1]
+    //motor[motorD]
+    	servo[servo5] = 40;
+    	servo[servo6] = 40;
+
+		}
+		if(joy2x2 < -3)
+		{
+			servo[servo5] = 0;
+			servo[servo6] = 0;
+		}
 
     // if movement smaller than calibration value (10), set to zero to switch off motors
 
@@ -113,6 +208,7 @@ void EPS_driver_control ()
   	wait1Msec (4);
   }
 }
+
 
 
 task main()
