@@ -19,6 +19,17 @@
 
 #include "EPS_JoystickDriver.c"
 
+#define button1   0x01
+#define button2   0x02
+#define button3   0x04
+#define button4   0x08
+#define button5   0x10
+#define button6   0x20
+#define button7   0x40
+#define button8   0x80
+#define button9  0x100
+#define button10 0x200
+
 void PlayNote (int index, float beats, float pause)
 {
 	PlayImmediateTone (((float)200*(pow(1.08333333,index))), (beats - pause)*25);
@@ -66,13 +77,12 @@ void MoveClaw (int amount)
 	nMotorEncoderTarget[motorA]= abs(amount);
 	nMotorEncoderTarget[motorB]= abs(amount);
 
-	motor[motorA] = (amount >0 ? 20:-20);
-	motor[motorB] = (amount >0 ? 20:-20);
-
-	while (nMotorRunState[motorA] != runStateIdle || nMotorRunState[motorB] != runStateIdle)
-		{
-		//kill some time
-		}
+motor[motorA] = (amount >0 ? 20:-20);
+motor[motorB] = (amount >0 ? 20:-20);
+	int i = 5000;
+	while (nMotorRunState[motorA] != runStateIdle && nMotorRunState[motorB] != runStateIdle && i > 0) {
+		i-= 1;
+	}
 
 	motor[motorA] = 0;
 	motor[motorB] = 0;
@@ -84,56 +94,93 @@ void EPS_initialize ()
 {
 	// initialization after power up and before autonomus period
 	// we may put servos into a certain position etc. here
-  // if we do antyhing here, don't for get to put the "robot moves during init" label on the robot!!!
+	// if we do antyhing here, don't for get to put the "robot moves during init" label on the robot!!!
 
-//	EPS_WeAreTheChampions ();
+	// EPS_WeAreTheChampions ();
 
-//	nSyncedMotors = synchAB;
-//	nSyncedTurnRatio = -100;
+	//	nSyncedMotors = synchAB;
+	//	nSyncedTurnRatio = -100;
 
-	MoveClaw(-20);
-	wait10Msec (100);
+	//MoveClaw(-20);o
+	//wait10Msec (100);
+	//MoveClaw(20);
+
+
+
+}
+
+void EPS_autonomous_work ()
+{
+	EPS_Housework();
+	//forward
+	MoveClaw(5);
+	motor[motorD] = -20;
+	motor[motorE] = 20;
+	wait10Msec(260);
+	//stop
+	motor[motorD] = 0;
+	motor[motorE] = 0;
+	//open claw
+	MoveClaw(-15);
+	wait10Msec(80);
+	//move back
+	motor[motorD] = 20;
+	motor[motorE] = -20;
+	wait10Msec(210);
+	//stop and close claw
+	motor[motorD] = 0;
+	motor[motorE] = 0;
 	MoveClaw(20);
-
-
-
+	wait10Msec(120);
+	//turn
+	motor[motorD] = 0;
+	motor[motorE] = 40;
+	wait10Msec(80);
+	//forward
+	motor[motorD] = -40;
+	motor[motorE] = 40;
+	wait10Msec(240);
+	//turn
+	motor[motorD] = -40;
+	motor[motorE] = 0;
+	wait10Msec(115);
+	//forward
+	motor[motorD] = -50;
+	motor[motorE] = 50;
+	wait10Msec(210);
+	//turn
+	//motor[motorD] = -40;
+	//motor[motorE] = 0;
+	//wait10Msec(80);
+	//forward
+	//motor[motorD] = -50;
+	//motor[motorE] = 50;
+	//wait10Msec(200);
+	//stop
+	motor[motorD] = 0;
+	motor[motorE] = 0;
+	wait10Msec(5000);
+	PlayNote(200,3,0);
 }
 
 
 void EPS_autonomous ()
 {
 	EPS_Housework();
-
 	while (true)
-  {
-    // Get fresh raw joystick values for left stick
+	{
+		// Get fresh raw joystick values for left stick
 
-    getJoystickSettings(joystick);
-    if (joystick.StopPgm || joystick.UserMode)
-    {
-    	motor[motorD] = 0;
-    	motor[motorE] = 0;
-    	return;
-    }
+		getJoystickSettings(joystick);
+		if (joystick.StopPgm || joystick.UserMode)
+		{
+			motor[motorD] = 0;
+			motor[motorE] = 0;
+			return;
+		}
 
- 		// Move circle left, then circle right THIS IS EXAMPLE CODE ONLY
-
-  	motor[motorD] = 20;
-  	motor[motorE] = 20;
-
-  	wait10Msec(100);
-
-  	motor[motorD] = -20;
-  	motor[motorE] = -20;
-
-  	wait10Msec(100);
-
-  	//
-  	// Leave this in here: yield to other tasks
-  	//
-
-  	wait1Msec (4);
-  }
+		EPS_autonomous_work();
+	}
 }
 
 void EPS_driver_control ()
@@ -144,69 +191,74 @@ void EPS_driver_control ()
 	float straight_slow_factor = 2;
 
 	motor[motorD] = 0;
-  motor[motorE] = 0;
+	motor[motorE] = 0;
 
-  while (true)
-  {
-    // Get fresh raw joystick values for left stick
+	while (true)
+	{
+		// Get fresh raw joystick values for left stick
 
-    getJoystickSettings(joystick);
+		getJoystickSettings(joystick);
 
-    joy1x1 = joystick.joy1_x1;
-    joy1y1 = joystick.joy1_y1;
-    int joy2x2 = joystick.joy1_x2;
+		joy1x1 = joystick.joy1_x1;
+		joy1y1 = joystick.joy1_y1;
+		int joy2x2 = joystick.joy1_x2;
 
-    //int buttons = joystick.joy1_Buttons;
-    if(joy2x2 > 3)
-    {
-    //servo[servo1]
-    //motor[motorD]
-    	servo[servo5] = 40;
-    	servo[servo6] = 40;
+		//int buttons = joystick.joy1_Buttons;
+		if(joy2x2 > 3)
+		{
+			//servo[servo1]
+			//motor[motorD]
+			MoveClaw(15);
 
 		}
 		if(joy2x2 < -3)
 		{
-			servo[servo5] = 0;
-			servo[servo6] = 0;
+			MoveClaw(-15);
 		}
 
-    // if movement smaller than calibration value (10), set to zero to switch off motors
+		if(joy1Btn(1) > 0) {
+			MoveClaw(-15);
+		}
 
-    if (abs(joy1x1) < 10) joy1x1 = 0;
-    if (abs(joy1y1) < 10) joy1y1 = 0;
+		if(joy1Btn(3) > 0) {
+			MoveClaw(15);
+		}
+		// if movement smaller than calibration value (10), set to zero to switch off motors
 
-    if (joy1x1 < 0)
-    {
-    	// moving left;
-     	motor[motorD] = (int) (0);
-  		motor[motorE] = (int) (joy1y1 / turn_slow_factor);
- 		}
- 		else if (joy1x1 > 0)
- 		{
- 			// moving right
-  		motor[motorD] = (int) ((-1) * joy1y1 / turn_slow_factor);
-     	motor[motorE] = (int) ((-1) * (0));
- 		}
- 		else
- 		{
- 			// straight forward or back
-  		motor[motorD] = (int) ((-1) * (joy1y1) / straight_slow_factor);
-  		motor[motorE] = (int) (joy1y1 / straight_slow_factor);
- 		}
+		if (abs(joy1x1) < 10) joy1x1 = 0;
+		if (abs(joy1y1) < 10) joy1y1 = 0;
+
+		if (joy1x1 < 0)
+		{
+			// moving left;
+			motor[motorD] = (int) (0);
+			motor[motorE] = (int) (joy1y1 / turn_slow_factor);
+		}
+		else if (joy1x1 > 0)
+		{
+			// moving right
+			motor[motorD] = (int) ((-1) * joy1y1 / turn_slow_factor);
+			motor[motorE] = (int) ((-1) * (0));
+		}
+		else
+		{
+			// straight forward or back
+			motor[motorD] = (int) ((-1) * (joy1y1) / straight_slow_factor);
+			motor[motorE] = (int) (joy1y1 / straight_slow_factor);
+		}
 
 
-/*
-    motor[motorD] = (int) ((-joy1x1-joy1y1)/2);
-    motor[motorE] = (int) ((-joy1x1+joy1y1)/2);
-*/
+		/*
+		motor[motorD] = (int) ((-joy1x1-joy1y1)/2);
+		motor[motorE] = (int) ((-joy1x1+joy1y1)/2);
+		*/
 
-  	//
-  	// yield to other tasks
-  	//
+		//
+		// yield to other tasks
+		//
 
-  	wait1Msec (4);
-  }
+		wait1Msec (4);
+	}
 }
 
 
@@ -216,16 +268,17 @@ task main()
 	while (true)
 	{
 		EPS_initialize ();
+//		EPS_autonomous_work();
 
 		waitForStart ();
 		getJoystickSettings(joystick);
-  	if (joystick.UserMode)
-  	{
-  		EPS_driver_control();
-  	}
-  	else
-  	{
-  		EPS_autonomous ();
-  	}
-  }
+		if (joystick.UserMode)
+		{
+			EPS_driver_control();
+		}
+		else
+		{
+			EPS_autonomous ();
+		}
+	}
 }
