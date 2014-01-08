@@ -87,25 +87,15 @@ task main()
   	float joy1x1 = joystick.joy1_x1;
 		float joy1y1 = joystick.joy1_y1;
 
-	  if (joy1x1 > joyvalueX[0] && joy1y1 > joyvalueY[3]) {
-	  	motor[motorD] = motorDMatrix[0][0];
-	  	motor[motorE] = motorEMatrix[0][0];
+		for(i=0;i<4;i++) {
+			if(joy1y1 >joyvalueY[i] {
+				break;
+			}
 		}
-		if (joy1x1 > joyvalueX[1] && joy1x1 < joyvalueX[0] && joy1y1 > joyvalueY[3]) {
-	  	motor[motorD] = motorDMatrix[1][0];
-	  	motor[motorE] = motorEMatrix[1][0];
-		}
-		if (joy1x1 < joyvalueX[1] && joy1x1 < joyvalueX[2] && joy1y1 > joyvalueY[3]) {
-	  	motor[motorD] = motorDMatrix[2][0];
-	  	motor[motorE] = motorEMatrix[2][0];
-		}
-		if (joy1x1 > joyvalueX[2] && joy1x1 < joyvalueX[3] && joy1y1 > joyvalueY[3]) {
-	  	motor[motorD] = motorDMatrix[3][0];
-	  	motor[motorE] = motorEMatrix[3][0];
-		}
-		if (joy1x1 > joyvalueX[3] && joy1y1 > joyvalueY[3]) {
-	  	motor[motorD] = motorDMatrix[4][0];
-	  	motor[motorE] = motorEMatrix[4][0];
+		for(i=0;i<4;i++) {
+			if(joy1x1 >joyvalueX[i] {
+				break;
+			}
 		}
   }
 }

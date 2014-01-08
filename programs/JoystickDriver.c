@@ -283,12 +283,13 @@ task displayDiagnostics()
   string sFileName;
   bNxtLCDStatusDisplay = true;
   getUserControlProgram(sFileName);
+
   while (true)
   {
     if (bDisplayDiagnostics)
     {
-//      nxtDisplayTextLine(6, "Teleop FileName:");
-//      nxtDisplayTextLine(6, sFileName);
+      nxtDisplayTextLine(6, "Teleop FileName:");
+      nxtDisplayTextLine(7, sFileName);
 
       getJoystickSettings(joystick);                   //Update variables with current joystick values
 
@@ -304,9 +305,9 @@ task displayDiagnostics()
       else
         nxtDisplayTextLine(3, "Ext Batt:%4.1f V", externalBatteryAvg / (float) 1000);
 
-     nxtDisplayTextLine(4, "NXT Batt:%4.1f V", nAvgBatteryLevel / (float) 1000);   // Display NXT Battery Voltage
+      nxtDisplayTextLine(4, "NXT Batt:%4.1f V", nAvgBatteryLevel / (float) 1000);   // Display NXT Battery Voltage
 
-   //   nxtDisplayTextLine(5, "FMS Msgs: %d", ntotalMessageCount);   // Display Count of FMS messages
+      nxtDisplayTextLine(5, "FMS Msgs: %d", ntotalMessageCount);   // Display Count of FMS messages
     }
 
     wait1Msec(200);
@@ -376,8 +377,6 @@ void waitForStart()
     getJoystickSettings(joystick);
     if (!joystick.StopPgm)
       break;
-    //if (nNxtButtonPressed > -1)
-    //	break;
   }
 
   return;
