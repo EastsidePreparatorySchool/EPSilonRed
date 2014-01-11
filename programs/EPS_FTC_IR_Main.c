@@ -105,7 +105,7 @@ void EPS_initialize ()
 	//	nSyncedMotors = synchAB;
 	//	nSyncedTurnRatio = -100;
 
-	//MoveClaw(-20);o
+	//MoveClaw(-20);
 	//wait10Msec (100);
 	//MoveClaw(20);
 
@@ -145,11 +145,18 @@ void EPS_autonomous_work ()
 				motor[motorD] = 0;
 				motor[motorE] = 0;
 				int count = 0;
+				int timeLimit = 60;
 				while(SensorValue(touchSensor) == 0)    // While the Touch Sensor is inactive (hasn't been pressed):
 			  {
 			    motor[motorD] = -15;                        /* Run motors B and C forward */
 			    motor[motorE] = 15;													/* with a power level of 100. */
 			  	count++;
+			  	if (timeLimit > 0) {
+			  		timeLimit--;
+			  	}
+			  	else {
+			  		break;
+			  	}
 			  }
 			  motor[motorD] = 0;
 				motor[motorE] = 0;
@@ -164,6 +171,28 @@ void EPS_autonomous_work ()
 				motor[motorE] = 15;
 				wait10Msec(200);
 				motor[motorD] = 0;
+				motor[motorE] = 0;
+				motor[motorD] = -25;
+				motor[motorE] = 25;
+				wait10Msec(200);
+				motor[motorD] = 0;
+				motor[motorE] = 0;
+				motor[motorD] = -25;
+				motor[motorE] = -25;
+				wait10Msec(50);
+				motor[motorD] = 0;
+				motor[motorE] = 0;
+				motor[motorD] = -50;
+				motor[motorE] = 50;
+				wait10Msec(75);
+				motor[motorD] = -25;
+				motor[motorE] = -25;
+				wait10Msec(90);
+				motor[motorD] = -100;
+				motor[motorE] = 100;
+				wait10Msec(150);
+				motor[motorD] = 0;
+				motor[motorE] = 0;
 				break;
 			}
 		}

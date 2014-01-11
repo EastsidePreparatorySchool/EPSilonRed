@@ -123,21 +123,9 @@ void EPS_autonomous_work ()
 		motor[motorE] = 0;
 		//forward
 		servoChangeRate[servo1] = 1;
-		motor[motorD] = -100;
-		motor[motorE] = 100;
-		wait10Msec(90);
-		CHECK_FOR_STOP();
-		//stop
-		servo[servo1] = SCOOP_DOWN;
-		wait10Msec(20);
-		motor[motorD] = 0;
-		motor[motorE] = 0;
-		wait10Msec(60);
-		CHECK_FOR_STOP();
-		//move back
-		motor[motorD] = 100;
-		motor[motorE] = -100;
-		wait10Msec(50);
+		motor[motorD] = -50;
+		motor[motorE] = 50;
+		wait10Msec(40);
 		CHECK_FOR_STOP();
 		//stop and close claw
 		motor[motorD] = 0;
@@ -147,24 +135,24 @@ void EPS_autonomous_work ()
 		CHECK_FOR_STOP();
 		//turn
 		motor[motorD] = 50;
-		motor[motorE] = 100;
+		motor[motorE] = 50;
 		wait10Msec(100);
 		servo[servo1] = SCOOP_UP;
 		CHECK_FOR_STOP();
 		//forward
-		motor[motorD] = -100;
-		motor[motorE] = 100;
+		motor[motorD] = -50;
+		motor[motorE] = 50;
 		wait10Msec(150);
 		CHECK_FOR_STOP();
 		//turn
-		motor[motorD] = -100;
-		motor[motorE] = -100;
+		motor[motorD] = -50;
+		motor[motorE] = -50;
 		wait10Msec(100);
 		servo[servo1] = SCOOP_UP;
 		CHECK_FOR_STOP();
 		//forward
-		motor[motorD] = -100;
-		motor[motorE] = 100;
+		motor[motorD] = -50;
+		motor[motorE] = 50;
 		wait10Msec(240);
 		CHECK_FOR_STOP();
 		//////turn
