@@ -118,55 +118,103 @@ void EPS_autonomous_work ()
 {
 	if(ret == 1)
 	{
-		EPS_Housework();
+		//EPS_Housework();
+		int _dirAC = 0;
+		int acS1, acS2, acS3, acS4, acS5 = 0;
 		motor[motorD] = 0;
 		motor[motorE] = 0;
-		//forward
-		servoChangeRate[servo1] = 1;
-		motor[motorD] = -100;
-		motor[motorE] = 100;
-		wait10Msec(90);
-		CHECK_FOR_STOP();
-		//stop
-		servo[servo1] = SCOOP_DOWN;
-		wait10Msec(20);
-		motor[motorD] = 0;
-		motor[motorE] = 0;
-		wait10Msec(60);
-		CHECK_FOR_STOP();
-		//move back
-		motor[motorD] = 100;
-		motor[motorE] = -100;
-		wait10Msec(50);
-		CHECK_FOR_STOP();
-		//stop and close claw
-		motor[motorD] = 0;
-		motor[motorE] = 0;
-		wait10Msec(100);
-		servo[servo1] = SCOOP_UP;
-		CHECK_FOR_STOP();
-		//turn
-		motor[motorD] = 50;
-		motor[motorE] = 100;
-		wait10Msec(100);
-		servo[servo1] = SCOOP_UP;
-		CHECK_FOR_STOP();
-		//forward
-		motor[motorD] = -100;
-		motor[motorE] = 100;
-		wait10Msec(150);
-		CHECK_FOR_STOP();
-		//turn
-		motor[motorD] = -100;
-		motor[motorE] = -100;
-		wait10Msec(100);
-		servo[servo1] = SCOOP_UP;
-		CHECK_FOR_STOP();
-		//forward
-		motor[motorD] = -100;
-		motor[motorE] = 100;
-		wait10Msec(240);
-		CHECK_FOR_STOP();
+		int i = 200;
+		while(true) {
+			_dirAC = HTIRS2readACDir(HTIRS2);
+    	if (_dirAC < 0)
+        break; // I2C read error occurred
+
+    	if (!HTIRS2readAllACStrength(HTIRS2, acS1, acS2, acS3, acS4, acS5 ))
+    	  break; // I2C read error occurred
+
+			if(acS3 <= 15) {
+				motor[motorD] = -25;
+				motor[motorE] = 25;
+				wait10Msec(1);
+				i--;
+			}
+			else {
+				wait10Msec(7);
+				motor[motorE] = -25;
+				wait10Msec(90);
+				motor[motorD] = 0;
+				motor[motorE] = 0;
+				int count = 0;
+				while(SensorValue(touchSensor) == 0)    // While the Touch Sensor is inactive (hasn't been pressed):
+			  {
+			    motor[motorD] = -15;                        /* Run motors B and C forward */
+			    motor[motorE] = 15;													/* with a power level of 100. */
+			  	count++;
+			  }
+			  motor[motorD] = 0;
+				motor[motorE] = 0;
+				motor[motorB] = -50;
+				wait10Msec(50);
+				motor[motorB] = 0;
+				while(count > 0) {
+					motor[motorD] = 15;
+					motor[motorE] = -15;
+					count--;
+				}
+				motor[motorE] = 15;
+				wait10Msec(200);
+				motor[motorD] = 0;
+				break;
+			}
+		}
+		//motor[motorD] = 0;
+		//motor[motorE] = 0;
+		////forward
+		//servoChangeRate[servo1] = 1;
+		//motor[motorD] = -100;
+		//motor[motorE] = 100;
+		//wait10Msec(90);
+		//CHECK_FOR_STOP();
+		////stop
+		//servo[servo1] = SCOOP_DOWN;
+		//wait10Msec(20);
+		//motor[motorD] = 0;
+		//motor[motorE] = 0;
+		//wait10Msec(60);
+		//CHECK_FOR_STOP();
+		////move back
+		//motor[motorD] = 100;
+		//motor[motorE] = -100;
+		//wait10Msec(50);
+		//CHECK_FOR_STOP();
+		////stop and close claw
+		//motor[motorD] = 0;
+		//motor[motorE] = 0;
+		//wait10Msec(100);
+		//servo[servo1] = SCOOP_UP;
+		//CHECK_FOR_STOP();
+		////turn
+		//motor[motorD] = 50;
+		//motor[motorE] = 100;
+		//wait10Msec(100);
+		//servo[servo1] = SCOOP_UP;
+		//CHECK_FOR_STOP();
+		////forward
+		//motor[motorD] = -100;
+		//motor[motorE] = 100;
+		//wait10Msec(150);
+		//CHECK_FOR_STOP();
+		////turn
+		//motor[motorD] = -100;
+		//motor[motorE] = -100;
+		//wait10Msec(100);
+		//servo[servo1] = SCOOP_UP;
+		//CHECK_FOR_STOP();
+		////forward
+		//motor[motorD] = -100;
+		//motor[motorE] = 100;
+		//wait10Msec(240);
+		//CHECK_FOR_STOP();
 		//////turn
 		////////motor[motorD] = -40;
 		////////motor[motorE] = 0;
@@ -181,10 +229,10 @@ void EPS_autonomous_work ()
 		//motor[motorD] = 0;
 		//motor[motorE] = 0;
 		//wait10Msec(5000);
-		PlayNote(200,3,0);
-		servo[servo1] = SCOOP_UP;
-		wait10Msec(300);
-		servo[servo1] = SCOOP_DOWN;
+		//PlayNote(200,3,0);
+		//servo[servo1] = SCOOP_UP;
+		//wait10Msec(300);
+		//servo[servo1] = SCOOP_DOWN;
 	}
 }
 
