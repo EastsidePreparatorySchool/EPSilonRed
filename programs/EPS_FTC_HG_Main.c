@@ -102,6 +102,9 @@ void EPS_initialize ()
         // if we do antyhing here, don't for get to put the "robot moves during init" label on the robot!!!
 
         EPS_WeAreTheChampions ();
+        servoChangeRate[servo1] = 10;
+        servo[servo1] = SCOOP_UP;
+
         //        nSyncedMotors = synchAB;
         //        nSyncedTurnRatio = -100;
 
@@ -116,188 +119,63 @@ void EPS_initialize ()
 int ret = 1;
 void EPS_autonomous_work ()
 {
-        if(ret == 1)
-        {
-                //EPS_Housework();
-                int _dirAC = 0;
-                int acS1, acS2, acS3, acS4, acS5 = 0;
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                int i = 200;
-                while(true) {
-                        _dirAC = HTIRS2readACDir(HTIRS2);
-            if (_dirAC < 0)
-        break; // I2C read error occurred
+   if(ret == 1)
+     {
 
-            if (!HTIRS2readAllACStrength(HTIRS2, acS1, acS2, acS3, acS4, acS5 ))
-              break; // I2C read error occurred
+      int timelimit = 200;
+      while(timelimit--)
+      {
 
-                        if(acS3 <= 15) {
-                                motor[motorD] = -25;
-                                motor[motorE] = 25;
-                                wait10Msec(1);
-                                i--;
-                        }
-                        else {
-                                wait10Msec(7);
-                                motor[motorE] = -25;
-                                wait10Msec(90);
-                                motor[motorD] = 0;
-                                motor[motorE] = 0;
-                                int count = 0;
-                                while(SensorValue(touchSensor) == 0)    // While the Touch Sensor is inactive (hasn't been pressed):
-                          {
-                            motor[motorD] = -15;                        /* Run motors B and C forward */
-                            motor[motorE] = 15;                                                                                                        /* with a power level of 100. */
-                                  count++;
-                          }
-                          motor[motorD] = 0;
-                                motor[motorE] = 0;
-                                motor[motorB] = -50;
-                                wait10Msec(50);
-                                motor[motorB] = 0;
-                                while(count > 0) {
-                                        motor[motorD] = 15;
-                                        motor[motorE] = -15;
-                                        count--;
-                                }
-                                motor[motorE] = 15;
-                                wait10Msec(200);
-                                motor[motorD] = 0;
-                                break;
-                        }
-                }
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                //forward
-                servoChangeRate[servo1] = 1;
-                motor[motorD] = -100;
-                motor[motorE] = 100;
-                wait10Msec(90);
-                CHECK_FOR_STOP();
-                //stop
-                servo[servo1] = SCOOP_DOWN;
-                wait10Msec(20);
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                CHECK_FOR_STOP();
-            		if(SensorValue(touchSensor) => 0)
-            		{
-            	  motor[motorD] = 0;
-                motor[motorE] = 0;
-                motor[motorB] = -50;
-                wait10Msec(50);
+    		if(SensorValue(touchSensor) > 0)
+    		{
+    			break;
+    		}
 
-             	  motor[motorD] = 0;
-                motor[motorE] = 0;
-                motor[motorB] = 0;
-                wait10Msec(1);
-            			//move back
-                motor[motorD] = 100;
-                motor[motorE] = -100;
-                wait10Msec(50);
-                CHECK_FOR_STOP();
-                //stop and close claw
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //turn
-                motor[motorD] = 50;
-                motor[motorE] = 100;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //forward
-                motor[motorD] = -100;
-                motor[motorE] = 100;
-                wait10Msec(150);
-                CHECK_FOR_STOP();
-                //turn
-                motor[motorD] = -100;
-                motor[motorE] = -100;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //forward
-                motor[motorD] = -100;
-                motor[motorE] = 100;
-                wait10Msec(240);
-                CHECK_FOR_STOP();
-                ////turn
-                //////motor[motorD] = -40;
-                //////motor[motorE] = 0;
-                //////wait10Msec(80);
-                //CHECK_FOR_STOP();
-                //////forward
-                //////motor[motorD] = -50;
-                //////motor[motorE] = 50;
-                //////wait10Msec(200);
-                //CHECK_FOR_STOP();
-                //stop
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                wait10Msec(5000);
-                PlayNote(200,3,0);
-                servo[servo1] = SCOOP_UP;
-                wait10Msec(300);
-                servo[servo1] = SCOOP_DOWN;
-            		}
-            		else{
-                //move back
-                motor[motorD] = 100;
-                motor[motorE] = -100;
-                wait10Msec(50);
-                CHECK_FOR_STOP();
-                //stop and close claw
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //turn
-                motor[motorD] = 50;
-                motor[motorE] = 100;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //forward
-                motor[motorD] = -100;
-                motor[motorE] = 100;
-                wait10Msec(150);
-                CHECK_FOR_STOP();
-                //turn
-                motor[motorD] = -100;
-                motor[motorE] = -100;
-                wait10Msec(100);
-                servo[servo1] = SCOOP_UP;
-                CHECK_FOR_STOP();
-                //forward
-                motor[motorD] = -100;
-                motor[motorE] = 100;
-                wait10Msec(240);
-                CHECK_FOR_STOP();
-                ////turn
-                //////motor[motorD] = -40;
-                //////motor[motorE] = 0;
-                //////wait10Msec(80);
-                //CHECK_FOR_STOP();
-                //////forward
-                //////motor[motorD] = -50;
-                //////motor[motorE] = 50;
-                //////wait10Msec(200);
-                //CHECK_FOR_STOP();
-                //stop
-                motor[motorD] = 0;
-                motor[motorE] = 0;
-                wait10Msec(5000);
-                PlayNote(200,3,0);
-                servo[servo1] = SCOOP_UP;
-                wait10Msec(300);
-                servo[servo1] = SCOOP_DOWN;
-              }
-        }
+
+     	  motor[motorD] = -25;
+        motor[motorE] = 25;
+        wait10Msec(1);
+    	}
+  		//stop
+  	  motor[motorD] = 0;
+      motor[motorE] = 0;
+      //flip block
+      motor[motorB] = -50;
+      wait10Msec(50);
+			//stop claw
+   	  motor[motorD] = 0;
+      motor[motorE] = 0;
+      motor[motorB] = 0;
+      wait10Msec(1);
+  			//move back
+      motor[motorD] = 25;
+      motor[motorE] = -25;
+      wait10Msec(50);
+      CHECK_FOR_STOP();
+      //turn for 45 degrees right
+      motor[motorD] = -25;
+      motor[motorE] = -25;
+      wait10Msec(70);
+      //forward
+    	motor[motorD] = -25;
+      motor[motorE] = 25;
+      wait10Msec(110);
+      //turn left
+      motor[motorD] = 25;
+      motor[motorE] = 25;
+      wait10Msec(70);
+      CHECK_FOR_STOP();
+      //forward
+      motor[motorD] = -50;
+      motor[motorE] = 50;
+      wait10Msec(150);
+      CHECK_FOR_STOP();
+      //stop
+      motor[motorD] = 0;
+      motor[motorE] = 0;
+      wait10Msec(5000);
+      PlayNote(200,3,0);
+  	}
 }
 
 
@@ -315,15 +193,15 @@ void EPS_driver_control ()
         int joyvalueY[] = {-75,-40,40,75};
 
         int leftMotorMatrix[5][5] = {{-50,-25,50,0,0},
-                                                                                                             {-15,10,25,0,0},
-                                                                                                             {25,0,0,0,-25},
-                                                                                                             {-15,0,-25,0,0},
-                                                                                                              {0,0,-25,0,0}};
+                                     {-15,10,25,0,0},
+                                     {25,0,0,0,-25},
+                                     {-15,0,-25,0,0},
+                                     {0,0,-25,0,0}};
         int rightMotorMatrix[5][5] = {{0,0,-50,25,50},
-                                                                                                              {0,0,-25,25,15},
-                                                                                                              {25,0,0,0,-25},
-                                                                                                              {0,0,25,0,15},
-                                                                                                                    {0,0,50,0,-25}};
+                                      {0,0,-25,25,15},
+                                      {25,0,0,0,-25},
+                                      {0,0,25,0,15},
+                                      {0,0,50,0,-25}};
         //EPS_Housework();
   while (true)
   {

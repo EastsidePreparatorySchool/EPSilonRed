@@ -113,6 +113,9 @@ void EPS_initialize ()
 
 }
 
+#define LEFT_90_DEGREES 85
+#define RIGHT_90_DEGREES 85
+
 int ret = 1;
 void EPS_autonomous_work ()
 {
@@ -120,10 +123,11 @@ void EPS_autonomous_work ()
 	{
 		//EPS_Housework();
 		int _dirAC = 0;
+
 		int acS1, acS2, acS3, acS4, acS5 = 0;
 		motor[motorD] = 0;
 		motor[motorE] = 0;
-		int i = 200;
+		int basketcounter = 200;
 		while(true) {
 			_dirAC = HTIRS2readACDir(HTIRS2);
     	if (_dirAC < 0)
@@ -132,70 +136,94 @@ void EPS_autonomous_work ()
     	if (!HTIRS2readAllACStrength(HTIRS2, acS1, acS2, acS3, acS4, acS5 ))
     	  break; // I2C read error occurred
 
-			if(acS3 <= 15) {
-				motor[motorD] = -25;
-				motor[motorE] = 25;
-				wait10Msec(1);
-				i--;
-			}
-			else {
-				wait10Msec(7);
-				motor[motorE] = -25;
-				wait10Msec(90);
-				motor[motorD] = 0;
-				motor[motorE] = 0;
-				int count = 0;
-				int timeLimit = 60;
-				while(SensorValue(touchSensor) == 0)    // While the Touch Sensor is inactive (hasn't been pressed):
-			  {
-			    motor[motorD] = -15;                        /* Run motors B and C forward */
-			    motor[motorE] = 15;													/* with a power level of 100. */
-			  	count++;
-			  	if (timeLimit > 0) {
-			  		timeLimit--;
-			  	}
-			  	else {
-			  		break;
-			  	}
-			  }
-			  motor[motorD] = 0;
-				motor[motorE] = 0;
-				motor[motorB] = -50;
-				wait10Msec(50);
-				motor[motorB] = 0;
-				while(count > 0) {
-					motor[motorD] = 15;
-					motor[motorE] = -15;
-					count--;
-				}
-				motor[motorE] = 15;
-				wait10Msec(200);
-				motor[motorD] = 0;
-				motor[motorE] = 0;
-				motor[motorD] = -25;
-				motor[motorE] = 25;
-				wait10Msec(200);
-				motor[motorD] = 0;
-				motor[motorE] = 0;
-				motor[motorD] = -25;
-				motor[motorE] = -25;
-				wait10Msec(50);
-				motor[motorD] = 0;
-				motor[motorE] = 0;
-				motor[motorD] = -50;
-				motor[motorE] = 50;
-				wait10Msec(75);
-				motor[motorD] = -25;
-				motor[motorE] = -25;
-				wait10Msec(90);
-				motor[motorD] = -100;
-				motor[motorE] = 100;
-				wait10Msec(150);
-				motor[motorD] = 0;
-				motor[motorE] = 0;
-				break;
-			}
+    	// look for IR sensor
+    	if(acS3 >= 15)
+    		break;
+
+    	motor[motorD] = -25;
+			motor[motorE] = 25;
+			wait10Msec(1);
+			basketcounter--;
 		}
+		// IR goal found, go past goal a bit, then turn right
+		wait10Msec(9);
+		motor[motorE] = -25; // switch motor to negative for turn
+		wait10Msec(RIGHT_90_DEGREES); // execute turn for 900ms
+		// stop
+		motor[motorD] = 0;
+		motor[motorE] = 0;
+		// go forward until we hit sensor button, but not too far (hence counter)
+		int count = 0;
+		int timeLimit = 1000; //ms
+		while(SensorValue(touchSensor) == 0)    // While the Touch Sensor is inactive (hasn't been pressed):
+	  {
+	    motor[motorD] = -15;                        /* Run motors B and C forward */
+	    motor[motorE] = 15;													/* with a power level of 15. */
+	  	count++;
+	  	wait1Msec(1);
+	  	if (timeLimit-- == 0) {
+	  		break;
+	  	}
+	  }
+	  // stop
+	  motor[motorD] = 0;
+		motor[motorE] = 0;
+		// flip claw forward for 500ms then stop
+		motor[motorB] = -50;
+		wait10Msec(50);
+		motor[motorB] = 0;
+
+		// go back same amount
+		while(count > 0) {
+			motor[motorD] = 15;
+			motor[motorE] = -15;
+			count--;
+			wait1Msec(1);
+		}
+		// turn left for 1100ms
+		motor[motorE] = 25;
+		motor[motorD] = 25;
+		wait10Msec(130);
+
+		//stop
+
+		motor[motorD] = 0;
+		motor[motorE] = 0;
+
+		while( basketcounter-- ){
+
+			// forward at speed 25
+			motor[motorD] = -25;
+			motor[motorE] = 25;
+			wait10Msec(1);
+		}
+		// stop
+		motor[motorD] = 0;
+		motor[motorE] = 0;
+		// turn right for 90deg
+		motor[motorD] = -25;
+		motor[motorE] = -25;
+		wait10Msec(RIGHT_90_DEGREES);
+		//stop
+		motor[motorD] = 0;
+		motor[motorE] = 0;
+		//forward for 1600ms
+		motor[motorD] = -50;
+		motor[motorE] = 50;
+		wait10Msec(160);
+		//turn right for 850ms
+		motor[motorD] = -25;
+		motor[motorE] = -25;
+		wait10Msec(RIGHT_90_DEGREES);
+		//forward for 2000ms
+		motor[motorD] = -100;
+		motor[motorE] = 100;
+		wait10Msec(200);
+		//stop on bridge
+		motor[motorD] = 0;
+		motor[motorE] = 0;
+	}
+
 		//motor[motorD] = 0;
 		//motor[motorE] = 0;
 		////forward
@@ -263,7 +291,7 @@ void EPS_autonomous_work ()
 		//wait10Msec(300);
 		//servo[servo1] = SCOOP_DOWN;
 	}
-}
+
 
 
 void EPS_autonomous ()
