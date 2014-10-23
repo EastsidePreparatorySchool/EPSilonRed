@@ -1,12 +1,9 @@
 #pragma config(Hubs,  S1, HTMotor,  HTServo,  none,     none)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
-#pragma config(Motor,  motorA,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  motorB,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  motorC,           ,             tmotorNXT, openLoop)
-#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop, encoder)
-#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop, encoder)
-#pragma config(Servo,  srvo_S1_C2_1,    servo1,               tServoStandard)
-#pragma config(Servo,  srvo_S1_C2_2,    servo2,               tServoStandard)
+#pragma config(Motor,  mtr_S1_C1_1,     motorD,        tmotorTetrix, openLoop)
+#pragma config(Motor,  mtr_S1_C1_2,     motorE,        tmotorTetrix, openLoop)
+#pragma config(Servo,  srvo_S1_C2_1,    servo1,               tServoNone)
+#pragma config(Servo,  srvo_S1_C2_2,    servo2,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_3,    servo3,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_4,    servo4,               tServoNone)
 #pragma config(Servo,  srvo_S1_C2_5,    servo5,               tServoNone)
@@ -237,9 +234,14 @@ void EPS_driver_control ()
 				break;
 			}
 		}
-		motor[motorD] = leftMotorMatrix[iy][ix];
-		motor[motorE] = rightMotorMatrix[iy][ix];
-
+		if (btn7 != 0) {
+			motor[motorD] = leftMotorMatrix[iy][ix];
+			motor[motorE] = rightMotorMatrix[iy][ix];
+		}
+		else if (btn7 == 0) {
+			motor[motorD] = leftMotorMatrix[iy/2][ix/2];
+			motor[motorE] = rightMotorMatrix[iy/2][ix/2];
+		}
 		// servo control
 		//
 
@@ -265,9 +267,9 @@ void EPS_driver_control ()
 		if(btn6 != 0) {
 			motor[motorA] = 100;
 		}
-		else if (btn7 != 0) {
+		/*else if (btn7 != 0) {
 			motor[motorA] = -100;
-		}
+		}*/
 		else {
 			motor[motorA] = 0;
 		}

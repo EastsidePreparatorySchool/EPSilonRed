@@ -329,7 +329,7 @@ string kConfigName = "FTCConfig.txt";
 void getUserControlProgram(string& sFileName)
 {
   byte   nParmToReadByte[2];
-  int    nFileSize;
+  short    nFileSize;
   TFileIOResult nIoResult;
   TFileHandle hFileHandle;
 
