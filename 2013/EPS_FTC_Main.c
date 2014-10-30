@@ -213,7 +213,7 @@ void EPS_driver_control ()
 		int ix, iy, joy1x1, joy1y1, joy2y2;
 		getJoystickSettings(joystick);
 		joy2y2 = joystick.joy1_y2;
-    joy1x1 = joystick.joy1_x1;
+		joy1x1 = joystick.joy1_x1;
 		joy1y1 = joystick.joy1_y1;
 		short btn1 = joy1Btn(1);
 		short btn3 = joy1Btn(3);
