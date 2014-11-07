@@ -42,14 +42,8 @@ void EPS_driver_control()
 				break;
 			}
 		}
-		if (btn7 != 0) {
-			motor[motorD] = leftMotorMatrix[iy][ix];
-			motor[motorE] = rightMotorMatrix[iy][ix];
-		}
-		else if (btn7 == 0) {
-			motor[motorD] = leftMotorMatrix[iy / 2][ix / 2];
-			motor[motorE] = rightMotorMatrix[iy / 2][ix / 2];
-		}
+		motor[motorD] = leftMotorMatrix[iy][ix];
+		motor[motorE] = rightMotorMatrix[iy][ix];
 
 		// servo control
 		//
@@ -79,9 +73,6 @@ void EPS_driver_control()
 		else if (btn7 != 0) {
 		motor[motorA] = -100;
 		}*/
-		else {
-			motor[motorA] = 0;
-		}
 		if (btn2 > 0) {
 			motor[motorA] = 0;
 			motor[motorD] = 0;
