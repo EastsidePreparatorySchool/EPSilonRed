@@ -16,18 +16,20 @@ void EPS_driver_control()
 	{ 0, 0, 25, 0, 15 },
 	{ 0, 0, 50, 0, -25 } };
 	//EPS_Housework();
+	short btn1 = joy1Btn(1);
+	short btn3 = joy1Btn(3);
+	short btn6 = joy1Btn(6);
+	short btn7 = joy1Btn(7);
+	short btn2 = joy1Btn(2);
+	int joy1x1, joy1y1, joy2y2;
 	while (true)
 	{
-		int ix, iy, joy1x1, joy1y1, joy2y2;
+		int ix, iy;
 		getJoystickSettings(joystick);
 		joy2y2 = joystick.joy1_y2;
 		joy1x1 = joystick.joy1_x1;
 		joy1y1 = joystick.joy1_y1;
-		short btn1 = joy1Btn(1);
-		short btn3 = joy1Btn(3);
-		short btn6 = joy1Btn(6);
-		short btn7 = joy1Btn(7);
-		short btn2 = joy1Btn(2);
+
 
 		if (joystick.StopPgm) {
 			break;
@@ -45,43 +47,8 @@ void EPS_driver_control()
 		motor[motorD] = leftMotorMatrix[iy][ix];
 		motor[motorE] = rightMotorMatrix[iy][ix];
 
-		// servo control
-		//
-
-		//int buttons = joystick.joy1_Buttons;
-
-		/*if (joy2y2 > 3)
-		{
-			servo[servo1] = SCOOP_DOWN;
-
-		}
-		if (joy2y2 < -3)
-		{
-			servo[servo1] = SCOOP_UP;
-		}
-
-		if (btn1 > 0) {
-			servoChangeRate[servo1] = 10;
-		}
-
-		if (btn3 > 0) {
-			servoChangeRate[servo1] = 5;
-		}
-		if (btn6 != 0) {
-			motor[motorA] = 100;
-		}
-		else if (btn7 != 0) {
-		motor[motorA] = -100;
-		}*/
-		if (btn2 > 0) {
-			motor[motorA] = 0;
-			motor[motorD] = 0;
-			motor[motorE] = 0;
-		}
-
-		wait1Msec(4);
+		wait1Msec(20);
 	}
-	motor[motorA] = 0;
 	motor[motorD] = 0;
 	motor[motorE] = 0;
 }

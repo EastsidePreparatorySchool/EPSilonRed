@@ -191,7 +191,7 @@ task readMsgFromPC()
             bDisconnected = true;
             releaseCPU();
           }
-          wait1Msec(4);    // Give other tasks a chance to run
+          wait1Msec(20);    // Give other tasks a chance to run
           nNoMessageCounter++;
           continue;        // No message this time. Loop again
         }
