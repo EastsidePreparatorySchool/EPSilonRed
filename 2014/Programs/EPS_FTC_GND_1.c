@@ -25,34 +25,12 @@
 #include "EPS_MUSIC.h"
 #include "EPS_DRIVER.h"
 
-void MoveClaw (int amount) {
-	nMotorEncoder[motorA] = 0;
-	nMotorEncoder[motorB] = 0;
-	nMotorEncoderTarget[motorA]= abs(amount);
-	nMotorEncoderTarget[motorB]= abs(amount);
-
-	motor[motorA] = (amount >0 ? 20:-20);
-	motor[motorB] = (amount >0 ? 20:-20);
-	int i = 5000;
-	while (nMotorRunState[motorA] != runStateIdle && nMotorRunState[motorB] != runStateIdle && i > 0) {
-		i-= 1;
-	}
-	motor[motorA] = 0;
-	motor[motorB] = 0;
-}
-
 void EPS_initialize () {
-	// initialization after power up and before autonomus period
+	// initialization after power up and before autonomous period
 	// we may put servos into a certain position etc. here
-	// if we do antyhing here, don't for get to put the "robot moves during init" label on the robot!!!
+	// if we do anything here, don't forget to put the "robot moves during init" label on the robot!!!
 
 	EPS_WeAreTheChampions ();
-	//	nSyncedMotors = synchAB;
-	//	nSyncedTurnRatio = -100;
-
-	//MoveClaw(-20);
-	//wait10Msec (100);
-	//MoveClaw(20);
 }
 
 void EPS_autonomous_work () {
@@ -63,9 +41,9 @@ void EPS_autonomous_work () {
 		//forward
 		motor[motorD] = -50;
 		motor[motorE] = 50;
-		wait10Msec(50);
+		wait1Msec(500);
 		CHECK_FOR_STOP();
-		//stop and close claw
+		//stop
 		motor[motorD] = 0;
 		motor[motorE] = 0;
 	}
@@ -81,7 +59,6 @@ void EPS_autonomous () {
 task main() {
 	bool bAutoDone = false;
 	EPS_initialize ();
-	//EPS_autonomous_work();
 	while (true) {
 		waitForStart ();
 

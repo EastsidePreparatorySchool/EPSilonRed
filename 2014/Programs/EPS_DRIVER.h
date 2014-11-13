@@ -15,12 +15,11 @@ void EPS_driver_control()
 	{ 25, 0, 0, 0, -25 },
 	{ 0, 0, 25, 0, 15 },
 	{ 0, 0, 50, 0, -25 } };
-	//EPS_Housework();
-	short btn1 = joy1Btn(1);
+	/*short btn1 = joy1Btn(1);
 	short btn3 = joy1Btn(3);
 	short btn6 = joy1Btn(6);
 	short btn7 = joy1Btn(7);
-	short btn2 = joy1Btn(2);
+	short btn2 = joy1Btn(2);*/
 	int joy1x1, joy1y1, joy2y2;
 	while (true)
 	{

@@ -6,13 +6,13 @@ void PlayNote(int index, float beats, float pause)
 	writeDebugStreamLine("Freq: %f", ((float)300 * (pow(1.08333333, index))));
 	if (pause > 0)
 	{
-		wait10Msec((beats - pause) * 25);
+		wait1Msec((beats - pause) * 250);
 		clearSounds();
-		wait10Msec(pause * 25);
+		wait1Msec(pause * 250);
 	}
 	else
 	{
-		wait10Msec(beats * 25);
+		wait1Msec(beats * 250);
 	}
 
 }
