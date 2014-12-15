@@ -8,7 +8,7 @@
 //
 
 #include "EPS_JoystickDriver.c"
-
+int slow = 1;
 function driver_control ()
 	{
 	float joy1x1;
