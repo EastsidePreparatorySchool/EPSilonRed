@@ -1,5 +1,5 @@
-EPS-FTC-2014
+EPS-FTC-2015
 ============
 
-Software repository for the EPS FTC 2014 Challenge.
- Software for the 2013 challenge is still available in the 2013 folder.
+Software repository for the EPS FTC 2015 Challenge.
+ Software for the 2013 and 2014 challenges is still available in the respective folders.
