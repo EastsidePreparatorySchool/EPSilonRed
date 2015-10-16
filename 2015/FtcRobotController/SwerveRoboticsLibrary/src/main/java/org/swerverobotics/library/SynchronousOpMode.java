@@ -97,6 +97,8 @@ public abstract class SynchronousOpMode extends OpMode implements IThunkDispatch
      * In your main() method, first perform any necessary data and hardware initialization,
      * then call waitForStart() to await the commencement of the game.
      */
+
+    /* TODO PUT INIT HERE */
     public final void waitForStart() throws InterruptedException
         {
         synchronized (this.loopLock)
