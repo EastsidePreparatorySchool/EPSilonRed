@@ -147,7 +147,7 @@ public abstract class SynchronousOpMode extends OpMode implements IThunkDispatch
     /**
      * Answer as to whether there's (probably) any state different in any of the game pads
      * since the last time that this method was called. Calling this method atomically clears
-     * the the state.
+     * the state.
      * 
      * @see #newGamePadInputAvailable() 
      */
