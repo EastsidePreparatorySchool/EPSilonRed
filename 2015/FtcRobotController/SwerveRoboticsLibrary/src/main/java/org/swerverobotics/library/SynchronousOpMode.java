@@ -100,15 +100,15 @@ public abstract class SynchronousOpMode extends OpMode implements IThunkDispatch
 
     /* TODO PUT INIT HERE */
     public final void waitForStart() throws InterruptedException
-        {
+    {
         synchronized (this.loopLock)
-            {
+        {
             while (!this.started())  // avoid spurious wakeups
-                {
+            {
                 this.loopLock.wait();
-                }
             }
         }
+    }
 
     /**
      * Answer as to whether this opMode is active and the robot should continue onwards. If the
@@ -922,10 +922,10 @@ public abstract class SynchronousOpMode extends OpMode implements IThunkDispatch
         }
 
     private void clearSingletons()
-        {
+    {
         synchronized (this.singletonLoopActions)
-            {
+        {
             this.singletonLoopActions.clear();
-            }
         }
     }
+}
