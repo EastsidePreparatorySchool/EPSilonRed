@@ -43,6 +43,7 @@ public class EPSTeleOp extends SynchronousOpMode
         this.motorLeftF.setDirection(DcMotor.Direction.REVERSE);
         this.motorLeftR.setDirection(DcMotor.Direction.REVERSE);
 
+        this.motorLeftF.setPower(50);
         // Configure the dashboard however we want it
         this.configureDashboard();
         
