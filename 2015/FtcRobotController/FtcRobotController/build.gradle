@@ -1,15 +1,22 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion = 'Google Inc.:Google APIs:19'
-    buildToolsVersion = '21.1.2'
+    compileSdkVersion 19
+    buildToolsVersion '21.1.2'
 
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
     }
+    buildTypes {
+        release {
+            debuggable true
+        }
+        debug {
+            debuggable true
+        }
+    }
 }
-
 repositories {
     flatDir {
         dirs 'libs'
@@ -18,11 +25,11 @@ repositories {
 
 dependencies {
     compile files('libs/android-support-v4.jar')
-    compile (name:'d2xx', ext:'jar')
     compile (name:'RobotCore-release', ext:'aar')
-    compile (name:'ModernRobotics-release', ext:'aar')
+    compile (name:'Hardware-release', ext:'aar')
     compile (name:'FtcCommon-release', ext:'aar')
-    compile (name:'WirelessP2p-release', ext:'aar')
+    compile (name:'ModernRobotics-release', ext:'aar')
     compile (name:'Analytics-release', ext:'aar')
+    compile (name:'WirelessP2p-release', ext:'aar')
     compile project(':SwerveRoboticsLibrary')
 }

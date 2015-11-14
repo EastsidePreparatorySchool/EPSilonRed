@@ -15,56 +15,55 @@ public class EPSTeleOp extends SynchronousOpMode
 {
     // All hardware variables can only be initialized inside the main() function,
     // not here at their member variable declarations.
-    DcMotor motorLeftF = null;
-    DcMotor motorLeftR = null;
+    DcMotor motorLeft = null;
+    /*DcMotor motorLeftR = null;
     DcMotor motorRightF = null;
-    DcMotor motorRightR = null;
+    DcMotor motorRightR = null; */
 
     @Override protected void main() throws InterruptedException
     {
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
-        this.motorLeftF = this.hardwareMap.dcMotor.get("motorLeftF");
-        this.motorLeftR = this.hardwareMap.dcMotor.get("motorLeftR");
-        this.motorRightF = this.hardwareMap.dcMotor.get("motorRightF");
-        this.motorRightR = this.hardwareMap.dcMotor.get("motorRightR");
+        this.motorLeft = this.hardwareMap.dcMotor.get("motorLeft");
+        /*this.motorLeftR = this.hardwareMap.dcMotor.get("motorLeftR");
+        this.motorRightF = this.hardwareMap.dcMotor.get("motorRight");
+        this.motorRightR = this.hardwareMap.dcMotor.get("motorRightR");*/
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
         // so we inform the motor objects of that fact.
-        this.motorLeftF.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.motorLeftR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motorLeft.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        /*this.motorLeftR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         this.motorRightF.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        this.motorRightR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        this.motorRightR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);*/
 
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
-        this.motorLeftF.setDirection(DcMotor.Direction.REVERSE);
-        this.motorLeftR.setDirection(DcMotor.Direction.REVERSE);
-
-        this.motorLeftF.setPower(50);
+        //this.motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        //this.motorLeftR.setDirection(DcMotor.Direction.REVERSE);
         // Configure the dashboard however we want it
         this.configureDashboard();
-        
+        this.motorLeft.setPower(0.5);
         // Wait until we've been given the ok to go
         this.waitForStart();
         
         // Enter a loop processing all the input we receive
         while (this.opModeIsActive())
             {
-            if (this.newGamePadInputAvailable())
+                this.motorLeft.setPower(0.5);
+            /*if (this.newGamePadInputAvailable())
                 {
                 // There is (likely) new gamepad input available.
                 // Do something with that! Here, we just drive.
                 this.doManualDrivingControl(this.gamepad1);
-                }
+                }*/
 
             // Emit telemetry with the freshest possible values
             this.telemetry.dashboard.update();
 
             // Let the rest of the system run until there's a stimulus from the robot controller runtime.
-            this.idle();
+            // this.idle();
             }
         }
 
@@ -106,10 +105,10 @@ public class EPSTeleOp extends SynchronousOpMode
         float powerRight = Range.clip(ctlPower + ctlSteering, -1f, 1f);
 
         // Tell the motors
-        this.motorLeftF.setPower(powerLeft);
-        this.motorLeftR.setPower(powerLeft);
+        this.motorLeft.setPower(powerLeft);
+        /*this.motorLeftR.setPower(powerLeft);
         this.motorRightF.setPower(powerRight);
-        this.motorRightR.setPower(powerRight);
+        this.motorRightR.setPower(powerRight);*/
     }
 
     float xformDrivingPowerLevels(float level)
@@ -134,21 +133,21 @@ public class EPSTeleOp extends SynchronousOpMode
                 {
                 @Override public Object value()
                     {
-                    return format(motorLeftF.getPower());
+                    return format(motorLeft.getPower());
                     }
                 }),
             this.telemetry.dashboard.item("right: ", new IFunc<Object>()
                 {
                 @Override public Object value()
                     {
-                    return format(motorLeftF.getPower());
+                    return format(motorLeft.getPower());
                     }
                 }),
             this.telemetry.dashboard.item("mode: ", new IFunc<Object>()
                 {
                 @Override public Object value()
                     {
-                    return motorLeftF.getChannelMode();
+                    return motorLeft.getChannelMode();
                     }
                 })
         );
