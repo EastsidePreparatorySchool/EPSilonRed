@@ -22,8 +22,8 @@ public class SynchTeleOp extends SynchronousOpMode
         // Initialize our hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names you assigned during the robot configuration
         // step you did in the FTC Robot Controller app on the phone.
-        this.motorLeft = this.hardwareMap.dcMotor.get("motorLeft");
-        this.motorRight = this.hardwareMap.dcMotor.get("motorRight");
+        this.motorLeft = this.hardwareMap.dcMotor.get("motor_1");
+        this.motorRight = this.hardwareMap.dcMotor.get("motor_2");
 
         // Configure the knobs of the hardware according to how you've wired your
         // robot. Here, we assume that there are no encoders connected to the motors,
@@ -34,7 +34,7 @@ public class SynchTeleOp extends SynchronousOpMode
         // One of the two motors (here, the left) should be set to reversed direction
         // so that it can take the same power level values as the other motor.
         this.motorLeft.setDirection(DcMotor.Direction.REVERSE);
-
+        this.motorLeft.setPower(0.15d);
         // Configure the dashboard however we want it
         this.configureDashboard();
         

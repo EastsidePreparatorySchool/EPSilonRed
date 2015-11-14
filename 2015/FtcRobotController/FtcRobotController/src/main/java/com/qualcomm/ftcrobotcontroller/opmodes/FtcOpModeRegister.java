@@ -33,6 +33,8 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
+
+import org.swerverobotics.library.examples.SynchTeleOp;
 import org.swerverobotics.library.internal.AnnotatedOpModeRegistrar;
 
 /**
@@ -106,6 +108,7 @@ public class FtcOpModeRegister implements OpModeRegister
     //manager.register("PushBotDriveTouch", PushBotDriveTouch.class);
     //manager.register("PushBotIrSeek", PushBotIrSeek.class);
     //manager.register("PushBotSquare", PushBotSquare.class);
-
+    //manager.register("SynchTeleOp", SynchTeleOp.class);
+    manager.register("EPSTeleOp", EPSTeleOp.class);
   }
 }
