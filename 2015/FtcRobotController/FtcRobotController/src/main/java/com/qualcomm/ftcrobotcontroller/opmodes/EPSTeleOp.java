@@ -9,9 +9,6 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 public class EPSTeleOp extends OpMode {
-
-    final static double MOTOR_POWER = 0.25; // Higher values will cause the robot to move faster
-
     DcMotor motorRight;
     DcMotor motorLeft;
 
@@ -24,13 +21,11 @@ public class EPSTeleOp extends OpMode {
     @Override
     public void start() {
         motorLeft.setDirection(DcMotor.Direction.FORWARD);
-        motorRight.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.FORWARD);
     }
 
     @Override
     public void loop() {
-        motorLeft.setPower(MOTOR_POWER);
-        motorRight.setPower(MOTOR_POWER);
         /*
 		 * Gamepad 1
 		 *
@@ -42,23 +37,21 @@ public class EPSTeleOp extends OpMode {
         // 1 is full down
         // direction: left_stick_x ranges from -1 to 1, where -1 is full left
         // and 1 is full right
-        float throttle = -gamepad1.left_stick_y;
-        float direction = gamepad1.left_stick_x;
-        float right = throttle - direction;
-        float left = throttle + direction;
+        float leftTread = -gamepad1.left_stick_y;
+        float rightTread = gamepad1.right_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
-        right = Range.clip(right, -1, 1);
-        left = Range.clip(left, -1, 1);
+        rightTread = Range.clip(rightTread, -1, 1);
+        leftTread = Range.clip(leftTread, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
-        right = (float)scaleInput(right);
-        left =  (float)scaleInput(left);
+        rightTread = (float)scaleInput(rightTread);
+        leftTread =  (float)scaleInput(leftTread);
 
         // write the values to the motors
-        motorRight.setPower(right);
-        motorLeft.setPower(left);
+        motorRight.setPower(rightTread);
+        motorLeft.setPower(leftTread);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -67,8 +60,8 @@ public class EPSTeleOp extends OpMode {
 		 * are currently write only.
 		 */
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", left));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", right));
+        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", leftTread));
+        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", rightTread));
     }
 
     /*

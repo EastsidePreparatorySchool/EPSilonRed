@@ -110,5 +110,6 @@ public class FtcOpModeRegister implements OpModeRegister
     //manager.register("PushBotSquare", PushBotSquare.class);
     //manager.register("SynchTeleOp", SynchTeleOp.class);
     manager.register("EPSTeleOp", EPSTeleOp.class);
+    manager.register("EPSAutonomous", EPSAutonomous.class);
   }
 }
