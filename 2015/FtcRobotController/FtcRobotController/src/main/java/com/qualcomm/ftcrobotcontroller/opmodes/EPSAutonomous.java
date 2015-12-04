@@ -8,6 +8,14 @@ import com.qualcomm.robotcore.util.Range;
  * Created by supertrevor on 2015-11-13.
  */
 
+/*
+ **************************************************
+ * ------------------------------------------------
+ * ------------DEPRECATED-DO-NOT-USE!--------------
+ * ------------------------------------------------
+ **************************************************
+ */
+
 public class EPSAutonomous extends OpMode {
 
     final static double MOTOR_POWER = 0.50; // Higher values will cause the robot to move faster

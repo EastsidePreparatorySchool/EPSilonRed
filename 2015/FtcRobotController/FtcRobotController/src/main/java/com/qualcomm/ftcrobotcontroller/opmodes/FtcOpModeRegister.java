@@ -110,6 +110,9 @@ public class FtcOpModeRegister implements OpModeRegister
     //manager.register("PushBotSquare", PushBotSquare.class);
     //manager.register("SynchTeleOp", SynchTeleOp.class);
     manager.register("EPSTeleOp", EPSTeleOp.class);
-    manager.register("EPSAutonomous", EPSAutonomous.class);
+    manager.register("EPSRedParkingZone", EPSRedParkingZone.class);
+    manager.register("EPSBlueParkingZone", EPSBlueParkingZone.class);
+    manager.register("EPSRedRamp", EPSRedRamp.class);
+    manager.register("EPSBlueRamp", EPSBlueRamp.class);
   }
 }
