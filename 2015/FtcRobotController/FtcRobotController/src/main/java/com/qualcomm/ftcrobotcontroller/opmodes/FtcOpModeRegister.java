@@ -73,42 +73,6 @@ public class FtcOpModeRegister implements OpModeRegister
      * or do that registration in a static method annotated as @OpModeRegistrar.
      */
 
-    //manager.register("NullOp", NullOp.class);
-
-    //manager.register("MatrixK9TeleOp", MatrixK9TeleOp.class);
-    //manager.register("K9TeleOp", K9TeleOp.class);
-    //manager.register("K9Line", K9Line.class);
-    //manager.register ("PushBotAuto", PushBotAuto.class);
-    //manager.register ("PushBotManual", PushBotManual.class);
-
-    //manager.register("MR Gyro Test", MRGyroTest.class);
-    //manager.register("AdafruitRGBExample", AdafruitRGBExample.class);
-    //manager.register("ColorSensorDriver", ColorSensorDriver.class);
-
-    //manager.register("IrSeekerOp", IrSeekerOp.class);
-    //manager.register("CompassCalibration", CompassCalibration.class);
-    //manager.register("I2cAddressChangeExample", LinearI2cAddressChange.class);
-
-
-    //manager.register("NxtTeleOp", NxtTeleOp.class);
-    
-    //manager.register("LinearK9TeleOp", LinearK9TeleOp.class);
-    //manager.register("LinearIrExample", LinearIrExample.class);
-
-    
-    //manager.register ("PushBotManual1", PushBotManual1.class);
-    //manager.register ("PushBotAutoSensors", PushBotAutoSensors.class);
-    //manager.register ("PushBotIrEvent", PushBotIrEvent.class);
-    
-    //manager.register ("PushBotManualSensors", PushBotManualSensors.class);
-    //manager.register ("PushBotOdsDetectEvent", PushBotOdsDetectEvent.class);
-    //manager.register ("PushBotOdsFollowEvent", PushBotOdsFollowEvent.class);
-    //manager.register ("PushBotTouchEvent", PushBotTouchEvent.class);    
-    
-    //manager.register("PushBotDriveTouch", PushBotDriveTouch.class);
-    //manager.register("PushBotIrSeek", PushBotIrSeek.class);
-    //manager.register("PushBotSquare", PushBotSquare.class);
-    //manager.register("SynchTeleOp", SynchTeleOp.class);
     manager.register("EPSTeleOp", EPSTeleOp.class);
     manager.register("EPSRedParkingZone", EPSRedParkingZone.class);
     manager.register("EPSBlueParkingZone", EPSBlueParkingZone.class);
