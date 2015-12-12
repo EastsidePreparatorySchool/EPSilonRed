@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FtcRobotController/FtcRobotController-FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController/FtcRobotController-FtcRobotController.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EPS-FTC.iml" filepath="$PROJECT_DIR$/EPS-FTC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" />
       <module fileurl="file://$PROJECT_DIR$/SwerveRoboticsLibrary/SwerveRoboticsLibrary.iml" filepath="$PROJECT_DIR$/SwerveRoboticsLibrary/SwerveRoboticsLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/YourCodeHere/YourCodeHere.iml" filepath="$PROJECT_DIR$/YourCodeHere/YourCodeHere.iml" />
     </modules>

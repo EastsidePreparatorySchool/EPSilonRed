@@ -8,20 +8,20 @@ import com.qualcomm.robotcore.util.Range;
  * Created by supertrevor on 2015-11-13.
  */
 
-public class EPSTeleOp extends OpMode {
-    DcMotor motorRight;
-    DcMotor motorLeft;
+public class EPSArmTest extends OpMode {
+    DcMotor motorExtension;
+    DcMotor motorAngle;
 
     @Override
     public void init() {
-        motorRight = hardwareMap.dcMotor.get("motor_2");
-        motorLeft = hardwareMap.dcMotor.get("motor_1");
+        motorExtension = hardwareMap.dcMotor.get("motor_2");
+        motorAngle = hardwareMap.dcMotor.get("motor_1");
     }
 
     @Override
     public void start() {
-        motorLeft.setDirection(DcMotor.Direction.FORWARD);
-        motorRight.setDirection(DcMotor.Direction.FORWARD);
+        motorAngle.setDirection(DcMotor.Direction.FORWARD);
+        motorExtension.setDirection(DcMotor.Direction.FORWARD);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class EPSTeleOp extends OpMode {
         leftTread =  (float)scaleInput(leftTread);
 
         // write the values to the motors
-        motorRight.setPower(rightTread);
-        motorLeft.setPower(leftTread);
+        motorExtension.setPower(rightTread);
+        motorAngle.setPower(leftTread);
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -98,4 +98,3 @@ public class EPSTeleOp extends OpMode {
         return dScale;
     }
 }
-
