@@ -14,8 +14,8 @@ public class EPSArmTest extends OpMode {
 
     @Override
     public void init() {
-        motorExtension = hardwareMap.dcMotor.get("motor_2");
-        motorAngle = hardwareMap.dcMotor.get("motor_1");
+        motorExtension = hardwareMap.dcMotor.get("motor_3");
+        motorAngle = hardwareMap.dcMotor.get("motor_4");
     }
 
     @Override
@@ -37,31 +37,21 @@ public class EPSArmTest extends OpMode {
         // 1 is full down
         // direction: left_stick_x ranges from -1 to 1, where -1 is full left
         // and 1 is full right
-        float leftTread = -gamepad1.right_stick_y;
-        float rightTread = gamepad1.left_stick_y;
+        float extendor = -gamepad1.right_stick_y;
+        float angler = gamepad1.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
-        rightTread = Range.clip(rightTread, -1, 1);
-        leftTread = Range.clip(leftTread, -1, 1);
+        angler = Range.clip(angler, -1, 1);
+        extendor = Range.clip(extendor, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
-        rightTread = (float)scaleInput(rightTread);
-        leftTread =  (float)scaleInput(leftTread);
+        angler = (float)scaleInput(angler);
+        extendor =  (float)scaleInput(extendor);
 
         // write the values to the motors
-        motorExtension.setPower(rightTread);
-        motorAngle.setPower(leftTread);
-
-		/*
-		 * Send telemetry data back to driver station. Note that if we are using
-		 * a legacy NXT-compatible motor controller, then the getPower() method
-		 * will return a null value. The legacy NXT-compatible motor controllers
-		 * are currently write only.
-		 */
-        telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", leftTread));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", rightTread));
+        motorExtension.setPower(extendor);
+        motorAngle.setPower(angler);
     }
 
     /*
