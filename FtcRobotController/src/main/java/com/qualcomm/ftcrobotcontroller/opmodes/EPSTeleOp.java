@@ -2,7 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -12,44 +12,34 @@ import com.qualcomm.robotcore.util.Range;
 public class EPSTeleOp extends OpMode {
     DcMotor motorRight;
     DcMotor motorLeft;
-    DcMotor motorExtension;
-    DcMotor motorAngle;
-    DcMotor motorClaw;
-    DcMotorController motorMeng;
-    DcMotorController.DeviceMode devMode;
+
+    DcMotor motorArmAngle;
+    DcMotor motorActuator;
+
+    DcMotor motorChurroGrabber;
 
     @Override
     public void init() {
-        motorMeng = hardwareMap.dcMotorController.get("motorMeng");
         motorRight = hardwareMap.dcMotor.get("motor_2");
         motorLeft = hardwareMap.dcMotor.get("motor_1");
-        motorExtension = hardwareMap.dcMotor.get("motor_3");
-        motorAngle = hardwareMap.dcMotor.get("motor_4");
-        motorClaw = hardwareMap.dcMotor.get("motor_5");
+        motorArmAngle = hardwareMap.dcMotor.get("motor_3");
+        motorActuator = hardwareMap.dcMotor.get("motor_4");
+        motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
     }
 
     @Override
     public void start() {
         motorLeft.setDirection(DcMotor.Direction.FORWARD);
         motorRight.setDirection(DcMotor.Direction.FORWARD);
-        motorAngle.setDirection(DcMotor.Direction.FORWARD);
-        motorExtension.setDirection(DcMotor.Direction.FORWARD);
-        motorClaw.setDirection(DcMotor.Direction.FORWARD);
 
-        devMode = DcMotorController.DeviceMode.WRITE_ONLY;
+        motorArmAngle.setDirection(DcMotor.Direction.REVERSE);
+        motorActuator.setDirection(DcMotor.Direction.REVERSE);
 
-        // set the mode
-        // Nxt devices start up in "write" mode by default, so no need to switch device modes here.
-        motorClaw.setMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
     }
 
     @Override
     public void loop() {
-        /*
-		 * Gamepad 1
-		 *
-		 * Gamepad 1 controls the drive motors with the joysticks
-		 */
 
         // throttle: left_stick_y ranges from -1 to 1, where -1 is full up, and
         // 1 is full down
@@ -57,53 +47,46 @@ public class EPSTeleOp extends OpMode {
         // and 1 is full right
         float leftTread = -gamepad1.right_stick_y;
         float rightTread = gamepad1.left_stick_y;
+        float armAngle = gamepad2.right_stick_y;
+        float actuator = gamepad2.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
         rightTread = Range.clip(rightTread, -1, 1);
         leftTread = Range.clip(leftTread, -1, 1);
+        armAngle = Range.clip(armAngle, -1, 1);
+        actuator = Range.clip(actuator, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
         rightTread = (float)scaleInput(rightTread);
         leftTread =  (float)scaleInput(leftTread);
+        armAngle = (float)scaleInput(armAngle);
+        actuator =  (float)scaleInput(actuator);
 
         // write the values to the motors
         motorRight.setPower(rightTread);
         motorLeft.setPower(leftTread);
+        motorArmAngle.setPower(armAngle * 0.5f);
+        motorActuator.setPower(actuator);
 
-        float claw = gamepad1.left_trigger;
-
-        if (gamepad1.right_trigger != 0.0) {
-            claw = -gamepad1.right_trigger;
+        if(gamepad1.x == true)
+        {
+            motorChurroGrabber.setPower(0.25f);
         }
 
-        motorClaw.setPower(claw);
-        
-        /*
-		 * Gamepad 2
-		 *
-		 * Gamepad 2 controls the arm motors via the two joysticks
-		 */
+        else if(gamepad1.y == true)
+        {
+            motorChurroGrabber.setPower(-0.25f);
+        }
 
-        // throttle: left_stick_y ranges from -1 to 1, where -1 is full up, and
-        // 1 is full down
-        // direction: left_stick_x ranges from -1 to 1, where -1 is full left
-        // and 1 is full right
-        float extendor = -gamepad2.right_stick_y;
-        float angler = gamepad2.left_stick_y;
+        else
+        {
+            motorChurroGrabber.setPower(0);
+        }
 
-        // clip the right/left values so that the values never exceed +/- 1
-        angler = Range.clip(angler, -1, 1);
-        extendor = Range.clip(extendor, -1, 1);
 
-        // scale the joystick value to make it easier to control
-        // the robot more precisely at slower speeds.
-        angler = (float)scaleInput(angler);
-        extendor =  (float)scaleInput(extendor);
 
-        // write the values to the motors
-        motorExtension.setPower(extendor);
-        motorAngle.setPower(angler);
+
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
@@ -124,6 +107,7 @@ public class EPSTeleOp extends OpMode {
     double scaleInput(double dVal)  {
         double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
                 0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
+
 
         // get the corresponding index for the scaleInput array.
         int index = (int) (dVal * 16.0);
