@@ -21,6 +21,9 @@ public class EPSTeleOp extends OpMode {
 
     Servo servoPlow;
 
+    int precisionModeDrive;
+    int precisionModeArm;
+
     @Override
     public void init() {
         motorRight = hardwareMap.dcMotor.get("motor_2");
@@ -29,6 +32,9 @@ public class EPSTeleOp extends OpMode {
         motorActuator = hardwareMap.dcMotor.get("motor_4");
         motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
         servoPlow = hardwareMap.servo.get("servo_1");
+
+        precisionModeDrive = 0;
+        precisionModeArm = 0;
     }
 
     @Override
@@ -70,10 +76,26 @@ public class EPSTeleOp extends OpMode {
         actuator =  (float)scaleInput(actuator);
 
         // write the values to the motors
-        motorRight.setPower(rightTread);
-        motorLeft.setPower(leftTread);
-        motorArmAngle.setPower(armAngle * 0.5f);
-        motorActuator.setPower(actuator);
+        if(precisionModeDrive == 1) {
+            motorRight.setPower(rightTread / 2f);
+            motorLeft.setPower(leftTread / 2f);
+        }
+
+        else {
+            motorRight.setPower(rightTread);
+            motorLeft.setPower(leftTread);
+        }
+
+        if(precisionModeArm == 1) {
+            motorArmAngle.setPower(armAngle * 0.25f);
+            motorActuator.setPower(actuator / 2f);
+        }
+
+        else {
+            motorArmAngle.setPower(armAngle * 0.5f);
+            motorActuator.setPower(actuator);
+        }
+
 
         if(gamepad1.x == true)
         {
@@ -98,7 +120,13 @@ public class EPSTeleOp extends OpMode {
             servoPlow.setPosition(0);
         }
 
+        if(gamepad1.a == true) {
+            precisionModeDrive = 1;
+        }
 
+        if(gamepad2.a == true) {
+            precisionModeArm = 1;
+        }
 
 
 		/*
