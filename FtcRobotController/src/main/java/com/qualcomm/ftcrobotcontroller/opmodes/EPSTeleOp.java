@@ -3,6 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -18,6 +19,8 @@ public class EPSTeleOp extends OpMode {
 
     DcMotor motorChurroGrabber;
 
+    Servo servoPlow;
+
     @Override
     public void init() {
         motorRight = hardwareMap.dcMotor.get("motor_2");
@@ -25,6 +28,7 @@ public class EPSTeleOp extends OpMode {
         motorArmAngle = hardwareMap.dcMotor.get("motor_3");
         motorActuator = hardwareMap.dcMotor.get("motor_4");
         motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
+        servoPlow = hardwareMap.servo.get("servo_1");
     }
 
     @Override
@@ -36,6 +40,8 @@ public class EPSTeleOp extends OpMode {
         motorActuator.setDirection(DcMotor.Direction.REVERSE);
 
         motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
+
+        servoPlow.setDirection(Servo.Direction.FORWARD);
     }
 
     @Override
@@ -84,6 +90,13 @@ public class EPSTeleOp extends OpMode {
             motorChurroGrabber.setPower(0);
         }
 
+        if(gamepad2.dpad_up == true) {
+            servoPlow.setPosition(100);
+        }
+
+        else if(gamepad2.dpad_down == true) {
+            servoPlow.setPosition(0);
+        }
 
 
 
