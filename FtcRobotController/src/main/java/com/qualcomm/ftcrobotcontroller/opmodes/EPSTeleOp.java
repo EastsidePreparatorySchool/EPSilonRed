@@ -18,6 +18,7 @@ public class EPSTeleOp extends OpMode {
     DcMotor motorActuator;
 
     DcMotor motorChurroGrabber;
+    DcMotor motorWinch;
 
     Servo servoPlow;
 
@@ -30,7 +31,8 @@ public class EPSTeleOp extends OpMode {
         motorLeft = hardwareMap.dcMotor.get("motor_1");
         motorArmAngle = hardwareMap.dcMotor.get("motor_3");
         motorActuator = hardwareMap.dcMotor.get("motor_4");
-        motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
+        motorChurroGrabber = hardwareMap.dcMotor.get("motor_6");
+        motorWinch = hardwareMap.dcMotor.get("motor_5");
         servoPlow = hardwareMap.servo.get("servo_1");
 
         precisionModeDrive = 0;
@@ -46,6 +48,7 @@ public class EPSTeleOp extends OpMode {
         motorActuator.setDirection(DcMotor.Direction.REVERSE);
 
         motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
+        motorWinch.setDirection((DcMotor.Direction.FORWARD));
 
         servoPlow.setDirection(Servo.Direction.FORWARD);
     }
@@ -128,6 +131,30 @@ public class EPSTeleOp extends OpMode {
             precisionModeArm = 1;
         }
 
+        if(gamepad1.b == true) {
+
+            precisionModeDrive = 0;
+        }
+
+        if(gamepad2.b == true) {
+            precisionModeArm = 0;
+        }
+
+        if(gamepad2.left_bumper == true) {
+            motorWinch.setPower(0.5f);
+        }
+
+        else {
+            motorWinch.setPower(0f);
+        }
+
+        if(gamepad2.right_bumper == true) {
+            motorWinch.setPower(-0.5f);
+        }
+
+        else {
+            motorWinch.setPower(0f);
+        }
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
