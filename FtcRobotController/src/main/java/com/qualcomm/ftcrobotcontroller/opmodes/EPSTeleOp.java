@@ -37,10 +37,6 @@ public class EPSTeleOp extends OpMode {
 
         precisionModeDrive = 0;
         precisionModeArm = 0;
-
-        servoPlow.setDirection(Servo.Direction.FORWARD);
-
-        servoPlow.setPosition(1.0);
     }
 
     @Override
@@ -53,6 +49,8 @@ public class EPSTeleOp extends OpMode {
 
         motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
         motorWinch.setDirection((DcMotor.Direction.FORWARD));
+
+        servoPlow.setDirection(Servo.Direction.FORWARD);
 
     }
 
@@ -93,13 +91,13 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(precisionModeArm == 1) {
-            motorArmAngle.setPower(armAngle * 0.35f);
-            motorActuator.setPower(actuator / 2f);
+            motorArmAngle.setPower(armAngle * 0.2f);
+            motorActuator.setPower(actuator / 4f);
         }
 
         else {
-            motorArmAngle.setPower(armAngle);
-            motorActuator.setPower(actuator);
+            motorArmAngle.setPower(armAngle * 0.30f);
+            motorActuator.setPower(actuator / 2f);
         }
 
 
@@ -144,15 +142,11 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(gamepad2.x == true) {
-            motorWinch.setPower(1f);
+            motorWinch.setPower(0.9f);
         }
 
-        else {
-            motorWinch.setPower(0f);
-        }
-
-        if(gamepad2.y == true) {
-            motorWinch.setPower(-1f);
+        else if (gamepad2.y == true){
+            motorWinch.setPower(-0.9f);
         }
 
         else {
