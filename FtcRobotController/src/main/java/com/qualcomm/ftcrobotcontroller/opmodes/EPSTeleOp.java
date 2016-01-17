@@ -93,24 +93,24 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(precisionModeArm == 1) {
-            motorArmAngle.setPower(armAngle * 0.25f);
+            motorArmAngle.setPower(armAngle * 0.35f);
             motorActuator.setPower(actuator / 2f);
         }
 
         else {
-            motorArmAngle.setPower(armAngle * 0.5f);
+            motorArmAngle.setPower(armAngle);
             motorActuator.setPower(actuator);
         }
 
 
         if(gamepad1.x == true)
         {
-            motorChurroGrabber.setPower(0.25f);
+            motorChurroGrabber.setPower(1f);
         }
 
         else if(gamepad1.y == true)
         {
-            motorChurroGrabber.setPower(-0.25f);
+            motorChurroGrabber.setPower(-1f);
         }
 
         else
@@ -118,11 +118,11 @@ public class EPSTeleOp extends OpMode {
             motorChurroGrabber.setPower(0);
         }
 
-        if(gamepad2.dpad_up == true) {
+        if(gamepad1.dpad_up == true) {
             servoPlow.setPosition(0.1);
         }
 
-        else if(gamepad2.dpad_down == true) {
+        else if(gamepad1.dpad_down == true) {
             servoPlow.setPosition(1.0);
         }
 
@@ -144,7 +144,7 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(gamepad2.x == true) {
-            motorWinch.setPower(0.5f);
+            motorWinch.setPower(1f);
         }
 
         else {
@@ -152,7 +152,7 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(gamepad2.y == true) {
-            motorWinch.setPower(-0.5f);
+            motorWinch.setPower(-1f);
         }
 
         else {
