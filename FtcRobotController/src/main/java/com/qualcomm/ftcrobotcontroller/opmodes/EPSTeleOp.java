@@ -3,6 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -17,6 +18,12 @@ public class EPSTeleOp extends OpMode {
     DcMotor motorActuator;
 
     DcMotor motorChurroGrabber;
+    DcMotor motorWinch;
+
+    Servo servoPlow;
+
+    int precisionModeDrive;
+    int precisionModeArm;
 
     @Override
     public void init() {
@@ -25,6 +32,11 @@ public class EPSTeleOp extends OpMode {
         motorArmAngle = hardwareMap.dcMotor.get("motor_3");
         motorActuator = hardwareMap.dcMotor.get("motor_4");
         motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
+        motorWinch = hardwareMap.dcMotor.get("motor_6");
+        servoPlow = hardwareMap.servo.get("servo_1");
+
+        precisionModeDrive = 0;
+        precisionModeArm = 0;
     }
 
     @Override
@@ -36,6 +48,10 @@ public class EPSTeleOp extends OpMode {
         motorActuator.setDirection(DcMotor.Direction.REVERSE);
 
         motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
+        motorWinch.setDirection((DcMotor.Direction.FORWARD));
+
+        servoPlow.setDirection(Servo.Direction.FORWARD);
+
     }
 
     @Override
@@ -64,19 +80,35 @@ public class EPSTeleOp extends OpMode {
         actuator =  (float)scaleInput(actuator);
 
         // write the values to the motors
-        motorRight.setPower(rightTread);
-        motorLeft.setPower(leftTread);
-        motorArmAngle.setPower(armAngle * 0.5f);
-        motorActuator.setPower(actuator);
+        if(precisionModeDrive == 1) {
+            motorRight.setPower(rightTread / 2f);
+            motorLeft.setPower(leftTread / 2f);
+        }
+
+        else {
+            motorRight.setPower(rightTread);
+            motorLeft.setPower(leftTread);
+        }
+
+        if(precisionModeArm == 1) {
+            motorArmAngle.setPower(armAngle * 0.2f);
+            motorActuator.setPower(actuator / 4f);
+        }
+
+        else {
+            motorArmAngle.setPower(armAngle * 0.30f);
+            motorActuator.setPower(actuator / 2f);
+        }
+
 
         if(gamepad1.x == true)
         {
-            motorChurroGrabber.setPower(0.25f);
+            motorChurroGrabber.setPower(1f);
         }
 
         else if(gamepad1.y == true)
         {
-            motorChurroGrabber.setPower(-0.25f);
+            motorChurroGrabber.setPower(-1f);
         }
 
         else
@@ -84,9 +116,42 @@ public class EPSTeleOp extends OpMode {
             motorChurroGrabber.setPower(0);
         }
 
+        if(gamepad1.dpad_up == true) {
+            servoPlow.setPosition(0.1);
+        }
 
+        else if(gamepad1.dpad_down == true) {
+            servoPlow.setPosition(1.0);
+        }
 
+        if(gamepad1.a == true) {
+            precisionModeDrive = 1;
+        }
 
+        if(gamepad2.a == true) {
+            precisionModeArm = 1;
+        }
+
+        if(gamepad1.b == true) {
+
+            precisionModeDrive = 0;
+        }
+
+        if(gamepad2.b == true) {
+            precisionModeArm = 0;
+        }
+
+        if(gamepad2.x == true) {
+            motorWinch.setPower(0.9f);
+        }
+
+        else if (gamepad2.y == true){
+            motorWinch.setPower(-0.9f);
+        }
+
+        else {
+            motorWinch.setPower(0f);
+        }
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using

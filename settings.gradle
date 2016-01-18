@@ -1,3 +1,10 @@
 include ':SwerveRoboticsLibrary', ':YourCodeHere'
 // FTC Apps
 include (':FtcRobotController')
+include ':lib:Analytics-release'
+include ':lib:FtcCommon-release'
+include ':lib:Hardware-release'
+include ':lib:ModernRobotics-release'
+include ':lib:RobotCore-release'
+include ':lib:WirelessP2p-release'
+
