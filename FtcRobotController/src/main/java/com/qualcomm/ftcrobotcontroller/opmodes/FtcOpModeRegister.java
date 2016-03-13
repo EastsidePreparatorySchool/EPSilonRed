@@ -34,7 +34,6 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
-import org.swerverobotics.library.examples.SynchTeleOp;
 import org.swerverobotics.library.internal.AnnotatedOpModeRegistrar;
 
 /**
@@ -78,5 +77,6 @@ public class FtcOpModeRegister implements OpModeRegister
     manager.register("EPSBlueParkingZone", EPSBlueParkingZone.class);
     manager.register("EPSRedRamp", EPSRedRamp.class);
     manager.register("EPSBlueRamp", EPSBlueRamp.class);
+    manager.register("ScalaTeleOp", ScalaTeleOp.class);
   }
 }

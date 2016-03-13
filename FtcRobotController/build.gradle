@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'jp.leafytree.android-scala'
 
 android {
     compileSdkVersion 19
@@ -36,4 +37,5 @@ dependencies {
     compile(name: 'Analytics-release', ext: 'aar')
     compile(name: 'WirelessP2p-release', ext: 'aar')
     compile project(':SwerveRoboticsLibrary')
+    compile "org.scala-lang:scala-library:2.11.8"
 }
