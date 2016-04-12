@@ -7,8 +7,10 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 
 class ScalaTeleOp extends OpMode {
-  private[opmodes] var motorRight: DcMotor = null
-  private[opmodes] var motorLeft: DcMotor = null
+  private[opmodes] var motorRight2: DcMotor = null
+  private[opmodes] var motorLeft1: DcMotor = null
+  private[opmodes] var motorRight1: DcMotor = null
+  private[opmodes] var motorLeft2: DcMotor = null
   private[opmodes] var motorArmAngle: DcMotor = null
   private[opmodes] var motorActuator: DcMotor = null
   private[opmodes] var motorChurroGrabber: DcMotor = null
@@ -18,25 +20,29 @@ class ScalaTeleOp extends OpMode {
   private[opmodes] var precisionModeArm: Int = 0
 
   def init {
-    motorRight = hardwareMap.dcMotor.get("motor_2")
-    motorLeft = hardwareMap.dcMotor.get("motor_1")
-    motorArmAngle = hardwareMap.dcMotor.get("motor_3")
+    motorRight2 = hardwareMap.dcMotor.get("motor_2a")
+    motorLeft1 = hardwareMap.dcMotor.get("motor_1a")
+    motorRight1 = hardwareMap.dcMotor.get("motor_2b")
+    motorLeft2 = hardwareMap.dcMotor.get("motor_1b")
+   /* motorArmAngle = hardwareMap.dcMotor.get("motor_3")
     motorActuator = hardwareMap.dcMotor.get("motor_4")
     motorChurroGrabber = hardwareMap.dcMotor.get("motor_5")
     motorWinch = hardwareMap.dcMotor.get("motor_6")
-    servoPlow = hardwareMap.servo.get("servo_1")
+    servoPlow = hardwareMap.servo.get("servo_1")*/
     precisionModeDrive = 0
     precisionModeArm = 0
   }
 
   override def start {
-    motorLeft.setDirection(DcMotor.Direction.FORWARD)
-    motorRight.setDirection(DcMotor.Direction.FORWARD)
-    motorArmAngle.setDirection(DcMotor.Direction.REVERSE)
+    motorLeft1.setDirection(DcMotor.Direction.FORWARD)
+    motorRight1.setDirection(DcMotor.Direction.REVERSE)
+    motorLeft2.setDirection(DcMotor.Direction.FORWARD)
+    motorRight2.setDirection(DcMotor.Direction.REVERSE)
+    /*motorArmAngle.setDirection(DcMotor.Direction.REVERSE)
     motorActuator.setDirection(DcMotor.Direction.REVERSE)
-    motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD))
-    motorWinch.setDirection((DcMotor.Direction.FORWARD))
-    servoPlow.setDirection(Servo.Direction.FORWARD)
+    motorChurroGrabber.setDirection(DcMotor.Direction.FORWARD)
+    motorWinch.setDirection(DcMotor.Direction.FORWARD)
+    servoPlow.setDirection(Servo.Direction.FORWARD)*/
   }
 
   def loop {
@@ -53,12 +59,16 @@ class ScalaTeleOp extends OpMode {
     armAngle = scaleInput(armAngle).toFloat
     actuator = scaleInput(actuator).toFloat
     if (precisionModeDrive == 1) {
-      motorRight.setPower(rightTread / 2f)
-      motorLeft.setPower(leftTread / 2f)
+      motorRight1.setPower(rightTread / 2f)
+      motorLeft1.setPower(leftTread / 2f)
+      motorRight2.setPower(rightTread / 2f)
+      motorLeft2.setPower(leftTread / 2f)
     }
     else {
-      motorRight.setPower(rightTread)
-      motorLeft.setPower(leftTread)
+      motorRight1.setPower(rightTread)
+      motorLeft1.setPower(leftTread)
+      motorRight2.setPower(rightTread)
+      motorLeft2.setPower(leftTread)
     }
     if (precisionModeArm == 1) {
       motorArmAngle.setPower(armAngle * 0.2f)
@@ -68,37 +78,37 @@ class ScalaTeleOp extends OpMode {
       motorArmAngle.setPower(armAngle * 0.30f)
       motorActuator.setPower(actuator / 2f)
     }
-    if (gamepad1.x == true) {
+    if (gamepad1.x) {
       motorChurroGrabber.setPower(1f)
     }
-    else if (gamepad1.y == true) {
+    else if (gamepad1.y) {
       motorChurroGrabber.setPower(-1f)
     }
     else {
       motorChurroGrabber.setPower(0)
     }
-    if (gamepad1.dpad_up == true) {
+    if (gamepad1.dpad_up) {
       servoPlow.setPosition(0.1)
     }
-    else if (gamepad1.dpad_down == true) {
+    else if (gamepad1.dpad_down) {
       servoPlow.setPosition(1.0)
     }
-    if (gamepad1.a == true) {
+    if (gamepad1.a) {
       precisionModeDrive = 1
     }
-    if (gamepad2.a == true) {
+    if (gamepad2.a) {
       precisionModeArm = 1
     }
-    if (gamepad1.b == true) {
+    if (gamepad1.b) {
       precisionModeDrive = 0
     }
-    if (gamepad2.b == true) {
+    if (gamepad2.b) {
       precisionModeArm = 0
     }
-    if (gamepad2.x == true) {
+    if (gamepad2.x) {
       motorWinch.setPower(0.9f)
     }
-    else if (gamepad2.y == true) {
+    else if (gamepad2.y) {
       motorWinch.setPower(-0.9f)
     }
     else {
