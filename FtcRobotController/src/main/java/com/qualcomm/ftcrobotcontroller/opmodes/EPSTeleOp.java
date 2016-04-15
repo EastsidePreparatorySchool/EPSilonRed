@@ -68,31 +68,48 @@ public class EPSTeleOp extends OpMode {
         // direction: left_stick_x ranges from -1 to 1, where -1 is full left
         // and 1 is full right
         float latitude = -gamepad1.right_stick_y;
-        float longitude = gamepad1.right_stick_x;
+        float longitude = gamepad1.left_stick_y;
+        float long1 = gamepad1.left_stick_x;
+        float long2 = gamepad1.right_stick_x;
         float armAngle = gamepad2.right_stick_y;
         float actuator = gamepad2.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
         longitude = Range.clip(longitude, -1, 1);
         latitude = Range.clip(latitude, -1, 1);
+        long1 = Range.clip(long1, -1, 1);
+        long2 = Range.clip(long2, -1, 1);
         armAngle = Range.clip(armAngle, -1, 1);
         actuator = Range.clip(actuator, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
-        longitude = (float)scaleInput(longitude);
-        latitude =  (float)scaleInput(latitude);
-        armAngle = (float)scaleInput(armAngle);
-        actuator =  (float)scaleInput(actuator);
+        longitude = (float) scaleInput(longitude);
+        latitude = (float) scaleInput(latitude);
+        armAngle = (float) scaleInput(armAngle);
+        actuator = (float) scaleInput(actuator);
 
         // write the values to the motors
-        if(precisionModeDrive == 1) {
+       /* if(precisionModeDrive == 1) {
             motorRight1.setPower(longitude / 2f);
             motorLeft1.setPower(latitude / 2f);
             motorRight2.setPower(longitude / 2f);
             motorLeft2.setPower(latitude / 2f);
+        }*/
+        //else {
+        //This is terrible code and I hate it but its ONLY TEMPORARY until the steering redesign is complete
+        if (long1 <= -0.75 || long2 <= -0.75) {
+            motorLeft1.setPower(1);
+            motorRight1.setPower(-1);
+            motorLeft2.setPower(-1);
+            motorRight2.setPower(1);
         }
-
+        else if (long1 >= 0.75 || long2 >= 0.75) {
+            motorLeft1.setPower(-1);
+            motorRight1.setPower(1);
+            motorLeft2.setPower(1);
+            motorRight2.setPower(-1);
+        }
         else {
             motorRight1.setPower(longitude);
             motorLeft1.setPower(latitude);
