@@ -45,10 +45,13 @@ public class EPSTeleOp extends OpMode {
 
     @Override
     public void start() {
-        motorLeft1.setDirection(DcMotor.Direction.FORWARD);
-        motorRight1.setDirection(DcMotor.Direction.FORWARD);
-        motorLeft2.setDirection(DcMotor.Direction.REVERSE);
-        motorRight2.setDirection(DcMotor.Direction.REVERSE);
+        while(true) {
+            motorLeft1.setDirection(DcMotor.Direction.FORWARD);
+            motorRight1.setDirection(DcMotor.Direction.FORWARD);
+            motorLeft2.setDirection(DcMotor.Direction.REVERSE);
+            motorRight2.setDirection(DcMotor.Direction.REVERSE);
+            break;
+        }
 
        /* motorArmAngle.setDirection(DcMotor.Direction.REVERSE);
         motorActuator.setDirection(DcMotor.Direction.REVERSE);
