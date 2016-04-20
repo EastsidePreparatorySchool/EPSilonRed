@@ -45,6 +45,7 @@ public class EPSTeleOp extends OpMode {
 
     @Override
     public void start() {
+        //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
         while(true) {
             motorLeft1.setDirection(DcMotor.Direction.FORWARD);
             motorRight1.setDirection(DcMotor.Direction.FORWARD);
