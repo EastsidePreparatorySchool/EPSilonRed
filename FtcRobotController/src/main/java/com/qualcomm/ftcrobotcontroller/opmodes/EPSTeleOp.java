@@ -32,10 +32,23 @@ public class EPSTeleOp extends OpMode {
 
     @Override
     public void start() {
-        motorLeft1.setDirection(DcMotor.Direction.FORWARD);
-        motorRight1.setDirection(DcMotor.Direction.FORWARD);
-        motorLeft2.setDirection(DcMotor.Direction.REVERSE);
-        motorRight2.setDirection(DcMotor.Direction.REVERSE);
+        //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
+        while(true) {
+            motorLeft1.setDirection(DcMotor.Direction.FORWARD);
+            motorRight1.setDirection(DcMotor.Direction.FORWARD);
+            motorLeft2.setDirection(DcMotor.Direction.REVERSE);
+            motorRight2.setDirection(DcMotor.Direction.REVERSE);
+            break;
+        }
+
+       /* motorArmAngle.setDirection(DcMotor.Direction.REVERSE);
+        motorActuator.setDirection(DcMotor.Direction.REVERSE);
+
+        motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
+        motorWinch.setDirection((DcMotor.Direction.FORWARD));
+
+        servoPlow.setDirection(Servo.Direction.FORWARD);
+*/
     }
 
     @Override
@@ -49,6 +62,8 @@ public class EPSTeleOp extends OpMode {
         float longitude = gamepad1.left_stick_y;
         float long1 = gamepad1.left_stick_x;
         float long2 = gamepad1.right_stick_x;
+        float armAngle = gamepad2.right_stick_y;
+        float actuator = gamepad2.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
         longitude = Range.clip(longitude, -1, 1);
