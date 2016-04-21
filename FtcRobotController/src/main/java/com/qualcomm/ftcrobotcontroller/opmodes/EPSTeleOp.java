@@ -40,15 +40,6 @@ public class EPSTeleOp extends OpMode {
             motorRight2.setDirection(DcMotor.Direction.REVERSE);
             break;
         }
-
-       /* motorArmAngle.setDirection(DcMotor.Direction.REVERSE);
-        motorActuator.setDirection(DcMotor.Direction.REVERSE);
-
-        motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
-        motorWinch.setDirection((DcMotor.Direction.FORWARD));
-
-        servoPlow.setDirection(Servo.Direction.FORWARD);
-*/
     }
 
     @Override
