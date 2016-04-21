@@ -16,14 +16,6 @@ public class EPSTeleOp extends OpMode {
     DcMotor motorRight2;
     DcMotor motorLeft2;
 
-    /*DcMotor motorArmAngle;
-    DcMotor motorActuator;
-
-    DcMotor motorChurroGrabber;
-    DcMotor motorWinch;
-
-    Servo servoPlow;*/
-
     int precisionModeDrive;
     int precisionModeArm;
 
@@ -33,11 +25,6 @@ public class EPSTeleOp extends OpMode {
         motorRight2 = hardwareMap.dcMotor.get("motor_2a");
         motorLeft1 = hardwareMap.dcMotor.get("motor_1a");
         motorLeft2 = hardwareMap.dcMotor.get("motor_1b");
-        /*motorArmAngle = hardwareMap.dcMotor.get("motor_3");
-        motorActuator = hardwareMap.dcMotor.get("motor_4");
-        motorChurroGrabber = hardwareMap.dcMotor.get("motor_5");
-        motorWinch = hardwareMap.dcMotor.get("motor_6");
-        servoPlow = hardwareMap.servo.get("servo_1");*/
 
         precisionModeDrive = 0;
         precisionModeArm = 0;
@@ -49,15 +36,6 @@ public class EPSTeleOp extends OpMode {
         motorRight1.setDirection(DcMotor.Direction.FORWARD);
         motorLeft2.setDirection(DcMotor.Direction.REVERSE);
         motorRight2.setDirection(DcMotor.Direction.REVERSE);
-
-       /* motorArmAngle.setDirection(DcMotor.Direction.REVERSE);
-        motorActuator.setDirection(DcMotor.Direction.REVERSE);
-
-        motorChurroGrabber.setDirection((DcMotor.Direction.FORWARD));
-        motorWinch.setDirection((DcMotor.Direction.FORWARD));
-
-        servoPlow.setDirection(Servo.Direction.FORWARD);
-*/
     }
 
     @Override
@@ -71,32 +49,18 @@ public class EPSTeleOp extends OpMode {
         float longitude = gamepad1.left_stick_y;
         float long1 = gamepad1.left_stick_x;
         float long2 = gamepad1.right_stick_x;
-        float armAngle = gamepad2.right_stick_y;
-        float actuator = gamepad2.left_stick_y;
 
         // clip the right/left values so that the values never exceed +/- 1
         longitude = Range.clip(longitude, -1, 1);
         latitude = Range.clip(latitude, -1, 1);
         long1 = Range.clip(long1, -1, 1);
         long2 = Range.clip(long2, -1, 1);
-        armAngle = Range.clip(armAngle, -1, 1);
-        actuator = Range.clip(actuator, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
         longitude = (float) scaleInput(longitude);
         latitude = (float) scaleInput(latitude);
-        armAngle = (float) scaleInput(armAngle);
-        actuator = (float) scaleInput(actuator);
 
-        // write the values to the motors
-       /* if(precisionModeDrive == 1) {
-            motorRight1.setPower(longitude / 2f);
-            motorLeft1.setPower(latitude / 2f);
-            motorRight2.setPower(longitude / 2f);
-            motorLeft2.setPower(latitude / 2f);
-        }*/
-        //else {
         //This is terrible code and I hate it but its ONLY TEMPORARY until the steering redesign is complete
         if (long1 <= -0.75 || long2 <= -0.75) {
             motorLeft1.setPower(1);
@@ -117,40 +81,6 @@ public class EPSTeleOp extends OpMode {
             motorLeft2.setPower(latitude);
         }
 
-        /*if(precisionModeArm == 1) {
-            motorArmAngle.setPower(armAngle * 0.2f);
-            motorActuator.setPower(actuator / 4f);
-        }
-
-        else {
-            motorArmAngle.setPower(armAngle * 0.30f);
-            motorActuator.setPower(actuator / 2f);
-        }*/
-
-
-       /* if(gamepad1.x == true)
-        {
-            motorChurroGrabber.setPower(1f);
-        }
-
-        else if(gamepad1.y == true)
-        {
-            motorChurroGrabber.setPower(-1f);
-        }
-
-        else
-        {
-            motorChurroGrabber.setPower(0);
-        }
-
-        if(gamepad1.dpad_up == true) {
-            servoPlow.setPosition(0.1);
-        }
-
-        else if(gamepad1.dpad_down == true) {
-            servoPlow.setPosition(1.0);
-        }
-        */
         if(gamepad1.a == true) {
             precisionModeDrive = 1;
         }
@@ -167,18 +97,6 @@ public class EPSTeleOp extends OpMode {
         if(gamepad2.b == true) {
             precisionModeArm = 0;
         }
-
-       /* if(gamepad2.x == true) {
-            motorWinch.setPower(0.9f);
-        }
-
-        else if (gamepad2.y == true){
-            motorWinch.setPower(-0.9f);
-        }
-
-        else {
-            motorWinch.setPower(0f);
-        }*/
 
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
