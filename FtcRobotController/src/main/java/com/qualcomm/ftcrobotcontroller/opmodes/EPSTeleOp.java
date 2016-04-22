@@ -19,35 +19,37 @@ public class EPSTeleOp extends OpMode {
     int precisionModeDrive;
     int precisionModeArm;
 
-    int[][] frontLeftMatrix = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }
-    };
-    int[][] frontrightMatrix = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }
-    };
-    int[][] rearLeftMatrix = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }
-    };
-    int[][] rearRightMatrix = new int[][]{
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0 }
-    };
+    final double[] yAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
+    final double[] xAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
 
+    final double[][] frontLeftMatrix = new double[][]{
+            { 0, 0, 01, 0.5, 1 },
+            { 0, 0, 0.5, 0.5, 0.5 },
+            { -1, -0.5, 0, 0.5, 1 },
+            { -0.5, -0.5, -0.5, 0, 0 },
+            { -1, -0.5, -1, 0, 0 }
+    };
+    final double[][] frontRightMatrix = new double[][]{
+            { 1, 0.5, 1, 0, 0 },
+            { 0.5, 0.5, 0.5, 0, 0 },
+            { 1, 0.5, 0, -0.5, -1 },
+            { 0, 0, -0.5, -0.5, -0.5 },
+            { 0, 0, -1, -0.5, -1 }
+    };
+    final double[][] rearLeftMatrix = new double[][]{
+            { 1, 0.5, 1, 0, 0 },
+            { 0.5, 0.5, 0.5, 0, 0 },
+            { 1, 0.5, 0, -0.5, -1 },
+            { 0, 0, -0.5, -0.5, -0.5 },
+            { 0, 0, -1, -0.5, -1 }
+    };
+    final double[][] rearRightMatrix = new double[][]{
+            { 0, 0, 01, 0.5, 1 },
+            { 0, 0, 0.5, 0.5, 0.5 },
+            { -1, -0.5, 0, 0.5, 1 },
+            { -0.5, -0.5, -0.5, 0, 0 },
+            { -1, -0.5, -1, 0, 0 }
+    };
 
     @Override
     public void init() {
@@ -79,43 +81,55 @@ public class EPSTeleOp extends OpMode {
         // 1 is full down
         // direction: left_stick_x ranges from -1 to 1, where -1 is full left
         // and 1 is full right
-        float latitude = -gamepad1.right_stick_y;
-        float longitude = gamepad1.left_stick_y;
-        float long1 = gamepad1.left_stick_x;
-        float long2 = gamepad1.right_stick_x;
-        float armAngle = gamepad2.right_stick_y;
-        float actuator = gamepad2.left_stick_y;
+        int ix,iy;
+        double joy1y1 = gamepad1.left_stick_y;
+        double joy1x1 = gamepad1.left_stick_x;
 
+        for (iy = 0; iy<4; iy++) {
+            if (joy1y1 < yAxisMatrix[iy]) {
+                break;
+            }
+        }
+        for (ix = 0; ix<4; ix++) {
+            if (joy1x1 < xAxisMatrix[ix]) {
+                break;
+            }
+        }
+
+        motorRight1.setPower(rearRightMatrix[ix][iy]);
+        motorLeft1.setPower(frontLeftMatrix[ix][iy]);
+        motorRight2.setPower(rearRightMatrix[ix][iy]);
+        motorLeft2.setPower(rearLeftMatrix[ix][iy]);
         // clip the right/left values so that the values never exceed +/- 1
-        longitude = Range.clip(longitude, -1, 1);
-        latitude = Range.clip(latitude, -1, 1);
-        long1 = Range.clip(long1, -1, 1);
-        long2 = Range.clip(long2, -1, 1);
+//        longitude = Range.clip(longitude, -1, 1);
+//        latitude = Range.clip(latitude, -1, 1);
+//        long1 = Range.clip(long1, -1, 1);
+//        long2 = Range.clip(long2, -1, 1);
 
         // scale the joystick value to make it easier to control
         // the robot more precisely at slower speeds.
-        longitude = (float) scaleInput(longitude);
-        latitude = (float) scaleInput(latitude);
+//        longitude = (float) scaleInput(longitude);
+//        latitude = (float) scaleInput(latitude);
 
         //This is terrible code and I hate it but its ONLY TEMPORARY until the steering redesign is complete
-        if (long1 <= -0.75 || long2 <= -0.75) {
-            motorLeft1.setPower(1);
-            motorRight1.setPower(-1);
-            motorLeft2.setPower(-1);
-            motorRight2.setPower(1);
-        }
-        else if (long1 >= 0.75 || long2 >= 0.75) {
-            motorLeft1.setPower(-1);
-            motorRight1.setPower(1);
-            motorLeft2.setPower(1);
-            motorRight2.setPower(-1);
-        }
-        else {
-            motorRight1.setPower(longitude);
-            motorLeft1.setPower(latitude);
-            motorRight2.setPower(longitude);
-            motorLeft2.setPower(latitude);
-        }
+//        if (long1 <= -0.75 || long2 <= -0.75) {
+//            motorLeft1.setPower(1);
+//            motorRight1.setPower(-1);
+//            motorLeft2.setPower(-1);
+//            motorRight2.setPower(1);
+//        }
+//        else if (long1 >= 0.75 || long2 >= 0.75) {
+//            motorLeft1.setPower(-1);
+//            motorRight1.setPower(1);
+//            motorLeft2.setPower(1);
+//            motorRight2.setPower(-1);
+//        }
+//        else {
+//            motorRight1.setPower(longitude);
+//            motorLeft1.setPower(latitude);
+//            motorRight2.setPower(longitude);
+//            motorLeft2.setPower(latitude);
+//        }
 
         if(gamepad1.a == true) {
             precisionModeDrive = 1;
@@ -141,8 +155,8 @@ public class EPSTeleOp extends OpMode {
 		 * are currently write only.
 		 */
         telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", latitude));
-        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", longitude));
+        telemetry.addData("left tgt pwr",  "left  pwr: " + String.format("%.2f", joy1y1));
+        telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", joy1x1));
     }
 
     /*
