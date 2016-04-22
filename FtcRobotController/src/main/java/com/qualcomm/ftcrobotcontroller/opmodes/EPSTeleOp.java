@@ -19,6 +19,36 @@ public class EPSTeleOp extends OpMode {
     int precisionModeDrive;
     int precisionModeArm;
 
+    int[][] frontLeftMatrix = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+    };
+    int[][] frontrightMatrix = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+    };
+    int[][] rearLeftMatrix = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+    };
+    int[][] rearRightMatrix = new int[][]{
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0 }
+    };
+
+
     @Override
     public void init() {
         motorRight1 = hardwareMap.dcMotor.get("motor_2b");
