@@ -19,11 +19,11 @@ public class EPSTeleOp extends OpMode {
     int precisionModeDrive;
     int precisionModeArm;
 
-    final double[] yAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
-    final double[] xAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
+    final double[] yAxisMatrix = new double[]{-0.75, -0.40, 0, 0.40, 0.75};
+    final double[] xAxisMatrix = new double[]{-0.75, -0.40, 0, 0.40, 0.75};
 
     final double[][] frontLeftMatrix = new double[][]{
-            { 0, 0, 01, 0.5, 1 },
+            { 0, 0, 1, 0.5, 1 },
             { 0, 0, 0.5, 0.5, 0.5 },
             { -1, -0.5, 0, 0.5, 1 },
             { -0.5, -0.5, -0.5, 0, 0 },
@@ -44,7 +44,7 @@ public class EPSTeleOp extends OpMode {
             { 0, 0, -1, -0.5, -1 }
     };
     final double[][] rearRightMatrix = new double[][]{
-            { 0, 0, 01, 0.5, 1 },
+            { 0, 0, 1, 0.5, 1 },
             { 0, 0, 0.5, 0.5, 0.5 },
             { -1, -0.5, 0, 0.5, 1 },
             { -0.5, -0.5, -0.5, 0, 0 },
@@ -67,8 +67,8 @@ public class EPSTeleOp extends OpMode {
         //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
         while(true) {
             motorLeft1.setDirection(DcMotor.Direction.FORWARD);
-            motorRight1.setDirection(DcMotor.Direction.FORWARD);
-            motorLeft2.setDirection(DcMotor.Direction.REVERSE);
+            motorRight1.setDirection(DcMotor.Direction.REVERSE);
+            motorLeft2.setDirection(DcMotor.Direction.FORWARD);
             motorRight2.setDirection(DcMotor.Direction.REVERSE);
             break;
         }
@@ -85,12 +85,12 @@ public class EPSTeleOp extends OpMode {
         double joy1y1 = gamepad1.left_stick_y;
         double joy1x1 = gamepad1.left_stick_x;
 
-        for (iy = 0; iy<4; iy++) {
+        for (iy = 0; iy<5; iy++) {
             if (joy1y1 < yAxisMatrix[iy]) {
                 break;
             }
         }
-        for (ix = 0; ix<4; ix++) {
+        for (ix = 0; ix<5; ix++) {
             if (joy1x1 < xAxisMatrix[ix]) {
                 break;
             }
@@ -98,7 +98,7 @@ public class EPSTeleOp extends OpMode {
 
         motorRight1.setPower(rearRightMatrix[ix][iy]);
         motorLeft1.setPower(frontLeftMatrix[ix][iy]);
-        motorRight2.setPower(rearRightMatrix[ix][iy]);
+        motorRight2.setPower(frontRightMatrix[ix][iy]);
         motorLeft2.setPower(rearLeftMatrix[ix][iy]);
         // clip the right/left values so that the values never exceed +/- 1
 //        longitude = Range.clip(longitude, -1, 1);
