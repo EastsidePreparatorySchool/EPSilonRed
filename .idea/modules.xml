@@ -2,17 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/lib/Analytics-release/Analytics-release.iml" filepath="$PROJECT_DIR$/lib/Analytics-release/Analytics-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/EPS-FTC.iml" filepath="$PROJECT_DIR$/EPS-FTC.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/FtcCommon-release/FtcCommon-release.iml" filepath="$PROJECT_DIR$/lib/FtcCommon-release/FtcCommon-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/Hardware-release/Hardware-release.iml" filepath="$PROJECT_DIR$/lib/Hardware-release/Hardware-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/ModernRobotics-release/ModernRobotics-release.iml" filepath="$PROJECT_DIR$/lib/ModernRobotics-release/ModernRobotics-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/RobotCore-release/RobotCore-release.iml" filepath="$PROJECT_DIR$/lib/RobotCore-release/RobotCore-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SwerveRoboticsLibrary/SwerveRoboticsLibrary.iml" filepath="$PROJECT_DIR$/SwerveRoboticsLibrary/SwerveRoboticsLibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/WirelessP2p-release/WirelessP2p-release.iml" filepath="$PROJECT_DIR$/lib/WirelessP2p-release/WirelessP2p-release.iml" />
-      <module fileurl="file://$PROJECT_DIR$/YourCodeHere/YourCodeHere.iml" filepath="$PROJECT_DIR$/YourCodeHere/YourCodeHere.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lib/lib.iml" filepath="$PROJECT_DIR$/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ftc_app-1.77.iml" filepath="$PROJECT_DIR$/ftc_app-1.77.iml" />
     </modules>
   </component>
 </project>
