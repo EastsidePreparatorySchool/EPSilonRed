@@ -19,6 +19,8 @@ public class EPSTeleOp extends OpMode {
     int precisionModeDrive;
     int precisionModeArm;
 
+    final int precisionDivider = 3;
+
     final double[] yAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
     final double[] xAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
 
@@ -89,10 +91,18 @@ public class EPSTeleOp extends OpMode {
                     break;
                 }
             }
-            motorRight1.setPower(-1.0 * rotationMatrix[rx]);
-            motorLeft1.setPower(rotationMatrix[rx]);
-            motorRight2.setPower(-1.0 * rotationMatrix[rx]);
-            motorLeft2.setPower(rotationMatrix[rx]);
+            if (precisionModeDrive == 1) {
+                motorRight1.setPower((-1.0 * rotationMatrix[rx])/precisionDivider);
+                motorLeft1.setPower((rotationMatrix[rx])/precisionDivider);
+                motorRight2.setPower((-1.0 * rotationMatrix[rx])/precisionDivider);
+                motorLeft2.setPower((rotationMatrix[rx])/precisionDivider);
+            }
+            else {
+                motorRight1.setPower(-1.0 * rotationMatrix[rx]);
+                motorLeft1.setPower(rotationMatrix[rx]);
+                motorRight2.setPower(-1.0 * rotationMatrix[rx]);
+                motorLeft2.setPower(rotationMatrix[rx]);
+            }
         }
         else {
             // throttle: left_stick_y ranges from -1 to 1, where -1 is full up, and
@@ -111,28 +121,26 @@ public class EPSTeleOp extends OpMode {
                     break;
                 }
             }
-
-            motorRight1.setPower(rearRightMatrix[ix][iy]);
-            motorLeft1.setPower(frontLeftMatrix[ix][iy]);
-            motorRight2.setPower(frontRightMatrix[ix][iy]);
-            motorLeft2.setPower(rearLeftMatrix[ix][iy]);
+            if (precisionModeDrive == 1) {
+                motorRight1.setPower((rearRightMatrix[ix][iy])/precisionDivider);
+                motorLeft1.setPower((frontLeftMatrix[ix][iy])/precisionDivider);
+                motorRight2.setPower((frontRightMatrix[ix][iy])/precisionDivider);
+                motorLeft2.setPower((rearLeftMatrix[ix][iy])/precisionDivider);
+            }
+            else {
+                motorRight1.setPower(rearRightMatrix[ix][iy]);
+                motorLeft1.setPower(frontLeftMatrix[ix][iy]);
+                motorRight2.setPower(frontRightMatrix[ix][iy]);
+                motorLeft2.setPower(rearLeftMatrix[ix][iy]);
+            }
         }
 
         if(gamepad1.a == true) {
             precisionModeDrive = 1;
         }
 
-        if(gamepad2.a == true) {
-            precisionModeArm = 1;
-        }
-
         if(gamepad1.b == true) {
-
             precisionModeDrive = 0;
-        }
-
-        if(gamepad2.b == true) {
-            precisionModeArm = 0;
         }
 
 		/*
