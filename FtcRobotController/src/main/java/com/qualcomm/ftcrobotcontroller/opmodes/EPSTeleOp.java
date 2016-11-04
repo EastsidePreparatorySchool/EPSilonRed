@@ -21,8 +21,8 @@ public class EPSTeleOp extends OpMode {
 
     final int precisionDivider = 3;
 
-    final double[] yAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
-    final double[] xAxisMatrix = new double[]{-0.75, -0.40, 0.40, 0.75};
+    final double[] yAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
+    final double[] xAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
 
     final double[] rotationMatrix = new double[]{-1.0,-0.5, 0.0, 0.5, 1.0};
 
