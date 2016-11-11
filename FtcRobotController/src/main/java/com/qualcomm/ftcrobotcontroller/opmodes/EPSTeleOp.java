@@ -15,6 +15,8 @@ public class EPSTeleOp extends OpMode {
     DcMotor motorLeft1;
     DcMotor motorRight2;
     DcMotor motorLeft2;
+    DcMotor motorWinch;
+    DcMotor motorCollector;
 
     int precisionModeDrive;
     int precisionModeArm;
@@ -24,7 +26,11 @@ public class EPSTeleOp extends OpMode {
     final double[] yAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
     final double[] xAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
 
+    final double[] preciseXMatrix = new double[]{-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,-0.05, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
+
     final double[] rotationMatrix = new double[]{-1.0,-0.5, 0.0, 0.5, 1.0};
+    final double[] collectorMatrix = new double[]{-1.0,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+
 
     final double[][] frontLeftMatrix = new double[][]{
             { 0.0, 0.0,-1.0,-1.0,-1.0},
@@ -61,6 +67,8 @@ public class EPSTeleOp extends OpMode {
         motorRight2 = hardwareMap.dcMotor.get("motor_1b");
         motorLeft1 = hardwareMap.dcMotor.get("motor_2b");
         motorLeft2 = hardwareMap.dcMotor.get("motor_2a");
+        motorCollector = hardwareMap.dcMotor.get("motor_coll");
+        motorWinch = hardwareMap.dcMotor.get("motor_win");
 
         precisionModeDrive = 0;
         precisionModeArm = 0;
@@ -74,6 +82,8 @@ public class EPSTeleOp extends OpMode {
             motorRight1.setDirection(DcMotor.Direction.REVERSE);
             motorLeft2.setDirection(DcMotor.Direction.FORWARD);
             motorRight2.setDirection(DcMotor.Direction.REVERSE);
+            motorCollector.setDirection(DcMotor.Direction.FORWARD);
+            motorWinch.setDirection(DcMotor.Direction.FORWARD);
             break;
         }
     }
@@ -83,7 +93,21 @@ public class EPSTeleOp extends OpMode {
         double joy1y1 = gamepad1.left_stick_y;
         double joy1x1 = gamepad1.left_stick_x;
         double joy1x2 = gamepad1.right_stick_x;
+        double joy2y1 = gamepad2.left_stick_y;
+        double joy2y2 = gamepad2.right_stick_y;
         int rx = 0;
+        int wy = 0;
+        int cy = 0;
+
+        if(Math.abs(joy2y1) > 0) {
+            for (cy = 0; cy < 20; cy++) {
+                if (joy2y1 < preciseXMatrix[cy]) {
+                    break;
+                }
+            }
+            motorCollector.setPower(collectorMatrix[cy]);
+
+        }
 
         if (Math.abs(joy1x2) > 0) {
             for (rx = 0; rx < 4; rx++) {
