@@ -1,9 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
@@ -13,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Created by ninjas28 on 10/7/2016.
  */
 
-public class EPSShooterAutonomous extends LinearOpMode {
+public class EPSShooterAutonomous2 extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
     DcMotor motorRight2;
@@ -94,6 +92,10 @@ public class EPSShooterAutonomous extends LinearOpMode {
 
         waitForStart();
 
+        fire();
+        motorCollector.setPower(-1);
+        TimeUnit.SECONDS.sleep(6);
+        motorCollector.setPower(0);
         fire();
     }
 
