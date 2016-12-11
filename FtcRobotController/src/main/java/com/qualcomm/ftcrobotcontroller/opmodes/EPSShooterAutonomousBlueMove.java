@@ -1,9 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 
@@ -13,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Created by ninjas28 on 10/7/2016.
  */
 
-public class EPSShooterAutonomous extends LinearOpMode {
+public class EPSShooterAutonomousBlueMove extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
     DcMotor motorRight2;
@@ -63,10 +61,10 @@ public class EPSShooterAutonomous extends LinearOpMode {
             { 1.0, 1.0, 1.0, 0.0, 0.0}
     };
 
-    int[] forward = new int[] {0,3};
-    int[] left = new int[] {2,0};
-    int[] right = new int[] {2,4};
-    int[] backward = new int[] {4,3};
+    int[] forward = new int[] {2,0};
+    int[] left = new int[] {0,2};
+    int[] right = new int[] {4,2};
+    int[] backward = new int[] {2,4};
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -95,6 +93,10 @@ public class EPSShooterAutonomous extends LinearOpMode {
         waitForStart();
 
         fire();
+        TimeUnit.SECONDS.sleep(1);
+        move(backward, 1000);
+        move(left, 500);
+        move(backward, 2000);
     }
 
     public void fire() throws InterruptedException {

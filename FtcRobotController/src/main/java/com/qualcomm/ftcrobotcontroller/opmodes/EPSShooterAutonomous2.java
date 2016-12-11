@@ -100,11 +100,11 @@ public class EPSShooterAutonomous2 extends LinearOpMode {
     }
 
     public void fire() throws InterruptedException {
-        motorWinch.setPower(1.0);
+        motorWinch.setPower(0.4);
         TimeUnit.SECONDS.sleep(2);
         motorWinch.setPower(0.0);
         trigger.setPosition(0.3);
-        motorWinch.setPower(-0.4);
+        motorWinch.setPower(-0.2);
         TimeUnit.SECONDS.sleep(2);
         motorWinch.setPower(0.0);
         trigger.setPosition(0.07);
