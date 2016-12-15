@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,6 +24,8 @@ public class EPSTeleOp extends OpMode {
     Servo trigger;
     Servo cross;
     ServoController sc;
+
+    private Semaphore shootLock = new Semaphore(1);
 
     int precisionModeDrive;
     int precisionModeArm;
@@ -134,8 +137,10 @@ public class EPSTeleOp extends OpMode {
             }
         }
         if (wyPrev != wy) {
+            shootLock.acquireUninterruptibly();
             motorWinch.setPower(rotationMatrix[wy]);
             wyPrev = wy;
+            shootLock.release();
         }
         //}
 
@@ -146,6 +151,7 @@ public class EPSTeleOp extends OpMode {
                 break;
             }
         }
+
         if (precisionModeDrive == 1 && rxPrev != rx) {
             motorRight1.setPower((-1.0 * rotationMatrix[rx]) / precisionDivider);
             motorLeft1.setPower((rotationMatrix[rx]) / precisionDivider);
@@ -204,19 +210,32 @@ public class EPSTeleOp extends OpMode {
         }
 
         if(gamepad2.y == true) {
+            (new Thread(new ShooterThread(motorWinch, motorCollector, trigger, sc, shootLock))).start();
             try {
-                fire();
+                TimeUnit.MILLISECONDS.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
         if(gamepad2.left_bumper == true) { //Servo up
-            trigger.setPosition(0.07);
+            try {
+                shootLock.acquire();
+                trigger.setPosition(0.07);
+                shootLock.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         if(gamepad2.right_bumper == true) { //Servo down
-            trigger.setPosition(0.3);
+            try {
+                shootLock.acquire();
+                trigger.setPosition(0.3);
+                shootLock.release();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
 		/*
@@ -231,23 +250,12 @@ public class EPSTeleOp extends OpMode {
         telemetry.addData("trigger pos", "trigger: " + String.format("%.2f", trigger.getPosition()));
     }
 
-    public void fire() throws InterruptedException {
-        motorWinch.setPower(0.4);
-        TimeUnit.SECONDS.sleep(2);
-        motorWinch.setPower(0.0);
-        trigger.setPosition(0.3);
-        motorWinch.setPower(-0.2);
-        TimeUnit.SECONDS.sleep(2);
-        motorWinch.setPower(0.0);
-        trigger.setPosition(0.07);
-    }
-
-    private void stopDriving() {
+    /*private void stopDriving() {
         motorRight1.setPower(0);
         motorLeft1.setPower(0);
         motorRight2.setPower(0);
         motorLeft2.setPower(0);
-    }
+    }*/
     /*
 	 * This method scales the joystick input so for low joystick values, the
 	 * scaled value is less than linear.  This is to make it easier to drive

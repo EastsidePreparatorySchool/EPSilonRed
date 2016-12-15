@@ -79,6 +79,8 @@ public class EPSShooterAutonomous2RedMove extends LinearOpMode {
         sc = hardwareMap.servoController.get("Servo Controller 1");
         sc.pwmEnable();
 
+        Catapult crossbow = new Catapult(motorWinch, trigger);
+
         //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
         while(true) {
             motorLeft1.setDirection(DcMotor.Direction.FORWARD);
@@ -92,26 +94,15 @@ public class EPSShooterAutonomous2RedMove extends LinearOpMode {
 
         waitForStart();
 
-        fire();
+        crossbow.fire();
         motorCollector.setPower(-1);
         TimeUnit.SECONDS.sleep(6);
         motorCollector.setPower(0);
-        fire();
+        crossbow.fire();
         TimeUnit.SECONDS.sleep(1);
         move(left, 500);
         move(backward, 2800);
         move(left, 500);
-    }
-
-    public void fire() throws InterruptedException {
-        motorWinch.setPower(0.4);
-        TimeUnit.SECONDS.sleep(2);
-        motorWinch.setPower(0.0);
-        trigger.setPosition(0.3);
-        motorWinch.setPower(-0.2);
-        TimeUnit.SECONDS.sleep(2);
-        motorWinch.setPower(0.0);
-        trigger.setPosition(0.07);
     }
 
     public void move(int[] direction, long time) {
