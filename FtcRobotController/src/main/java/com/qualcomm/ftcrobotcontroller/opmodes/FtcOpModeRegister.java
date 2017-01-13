@@ -56,7 +56,9 @@ public class FtcOpModeRegister implements OpModeRegister {
      */
 
     manager.register("NullOp", NullOp.class);
+    manager.register("Debugger", DebugOp.class);
     manager.register("TeleOp", EPSTeleOp.class);
+    manager.register("ColorBlue", EPSColorAutoBlue.class);
     manager.register("ShooterAuto1Ball", EPSShooterAutonomous.class);
     manager.register("ShooterAuto2Balls", EPSShooterAutonomous2.class);
     manager.register("ShooterAuto1BallRedMove", EPSShooterAutonomousRedMove.class);

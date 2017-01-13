@@ -1,9 +1,13 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,17 +15,27 @@ import java.util.concurrent.TimeUnit;
  * Created by ninjas28 on 2016-10-28.
  */
 
-public class EPSColorAutoBlue extends OpMode {
+public class EPSColorAutoBlue extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorRight2;
     DcMotor motorLeft1;
     DcMotor motorLeft2;
+    DcMotor motorWinch;
+    DcMotor motorCollector;
+    Servo trigger;
+    ServoController sc;
 
     ColorSensor colour;
     OpticalDistanceSensor distSense;
+    GyroSensor gyro;
+
+    AutoRotator rotator;
+    TouchSensor touch;
 
     int precisionModeDrive = 0;
     int precisionModeArm = 0;
+
+    int shootingHeading = 0;
 
     final int precisionDivider = 3;
 
@@ -60,65 +74,99 @@ public class EPSColorAutoBlue extends OpMode {
     };
 
     boolean hitBlack = false;
-
-    int[] north = new int[]{0, 2};
-    int[] west = new int[]{2, 0};
-    int[] east = new int[]{2, 4};
-    int[] south = new int[]{4, 2};
-    int[] northeast = new int[]{0, 4};
+    int[] north = new int[]{2, 0};
+    int[] west = new int[]{0, 2};
+    int[] east = new int[]{4, 2};
+    int[] south = new int[]{2, 4};
+    int[] northeast = new int[]{4, 0};
     int[] northwest = new int[]{0, 0};
     int[] southeast = new int[]{4, 4};
-    int[] southwest = new int[]{4, 0};
+    int[] southwest = new int[]{0, 4};
 
     @Override
-    public void init() {
-        colour = hardwareMap.colorSensor.get("color_sensor");
-        distSense = hardwareMap.opticalDistanceSensor.get("dist_sensor");
-
+    public void runOpMode() throws InterruptedException {
+        colour = hardwareMap.colorSensor.get("color");
+        distSense = hardwareMap.opticalDistanceSensor.get("dist");
+        gyro = hardwareMap.gyroSensor.get("gyro");
+        touch = hardwareMap.touchSensor.get("touch");
+        motorCollector = hardwareMap.dcMotor.get("motor_coll");
         motorRight1 = hardwareMap.dcMotor.get("motor_1a");
         motorRight2 = hardwareMap.dcMotor.get("motor_1b");
         motorLeft1 = hardwareMap.dcMotor.get("motor_2b");
         motorLeft2 = hardwareMap.dcMotor.get("motor_2a");
-    }
+        motorWinch = hardwareMap.dcMotor.get("motor_win");
+        trigger = hardwareMap.servo.get("trigger");
 
-    @Override
-    public void start() {
+        sc = hardwareMap.servoController.get("Servo Controller 1");
+        sc.pwmEnable();
+
         //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
-        while(true) {
+        while (true) {
             motorLeft1.setDirection(DcMotor.Direction.FORWARD);
             motorRight1.setDirection(DcMotor.Direction.REVERSE);
             motorLeft2.setDirection(DcMotor.Direction.FORWARD);
             motorRight2.setDirection(DcMotor.Direction.REVERSE);
             break;
         }
-    }
 
-    @Override
-    public void loop() {
-        while(distSense.getLightDetected() > 1) { //TODO: CALIBRATE DISTANCES
-            motorRight1.setPower(rearRightMatrix[northeast[0]][northeast[1]]);
-            motorLeft1.setPower(frontLeftMatrix[northeast[0]][northeast[1]]);
-            motorRight2.setPower(frontRightMatrix[northeast[0]][northeast[1]]);
-            motorLeft2.setPower(rearLeftMatrix[northeast[0]][northeast[1]]);
+        Catapult crossbow = new Catapult(motorWinch, trigger);
+        rotator = new AutoRotator(gyro, motorLeft1, motorLeft2, motorRight1, motorRight2);
+        rotator.init();
+
+        waitForStart();
+        rotator.gyro.resetZAxisIntegrator();
+
+        //shoot both balls
+        crossbow.fire();
+        motorCollector.setPower(1);
+        TimeUnit.SECONDS.sleep(5);
+        motorCollector.setPower(0);
+        crossbow.fire();
+        TimeUnit.SECONDS.sleep(1);
+
+        //knock the yoga ball off
+        move(south, 1000);
+        move(east, 500);
+        move(southwest, 2500);
+        move(north, 1000);
+        rotator.rotate(180);
+
+        //move to the wall
+        motorRight1.setPower(rearRightMatrix[east[0]][east[1]]);
+        motorLeft1.setPower(frontLeftMatrix[east[0]][east[1]]);
+        motorRight2.setPower(frontRightMatrix[east[0]][east[1]]);
+        motorLeft2.setPower(rearLeftMatrix[east[0]][east[1]]);
+        while(!touch.isPressed()) {}
+        stopDriving();
+        TimeUnit.MILLISECONDS.sleep(50);
+        move(west, 250);
+
+        //align parallel to the wall
+        int heading = rotator.gyro.getHeading();
+        if(heading <= 357 && heading > 180) {
+            rotator.manuallyRotate(0, "right", 0.13);
+        } else if (heading >= 3 && heading <= 180) {
+            rotator.manuallyRotate(0, "left", 0.13);
+        }
+
+        //find beacon
+        while(colour.blue() < 3) {}
+        for(int bluePrev = colour.blue(); colour.blue()-bluePrev > -1;) {
+            bluePrev = colour.blue();
         }
         stopDriving();
-        while(colour.blue() < 50) { //TODO: CALIBRATE COLOUR VALUES
-            motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 2);
-            motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 2);
-            motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 2);
-            motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 2);
-        }
-        if(colour.red() < 20 && colour.green() < 20 && colour.blue() < 20) {
-            hitBlack = true;
-        }
-        if(hitBlack && colour.blue() > 200) {
-            stopDriving();
-            //TODO: MAKE SERVO CODE
-        }
+
+        //hit beacon
+        move(east, 200);
+        TimeUnit.MILLISECONDS.sleep(50);
+        rotator.manuallyRotate(357, "left", 0.15);
+        TimeUnit.MILLISECONDS.sleep(100);
+        rotator.manuallyRotate(0, "right", 0.15);
+
     }
 
     private void move(int[] direction, long time) {
-        for(long stop = System.nanoTime() + TimeUnit.SECONDS.toNanos(time); stop > System.nanoTime();) {
+        for(long stop = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(time); stop > System.nanoTime();) {
             motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
             motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
             motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);

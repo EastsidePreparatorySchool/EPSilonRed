@@ -12,11 +12,14 @@ import java.util.concurrent.TimeUnit;
 public class Catapult {
     DcMotor winch;
     Servo t;
+    boolean isFiring;
     public Catapult(DcMotor winchMotor, Servo trigger){
         winch = winchMotor;
         t = trigger;
+        isFiring = false;
     }
     public void fire() throws InterruptedException {
+        isFiring = true;
         winch.setPower(0.6);
         TimeUnit.SECONDS.sleep(2);
         winch.setPower(0.0);
@@ -25,5 +28,10 @@ public class Catapult {
         TimeUnit.SECONDS.sleep(2);
         winch.setPower(0.0);
         t.setPosition(0.07);
+        isFiring = false;
+    }
+
+    public boolean isFiring() {
+        return isFiring;
     }
 }

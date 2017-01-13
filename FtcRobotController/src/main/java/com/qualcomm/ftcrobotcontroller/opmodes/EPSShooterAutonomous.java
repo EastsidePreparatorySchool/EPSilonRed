@@ -63,10 +63,10 @@ public class EPSShooterAutonomous extends LinearOpMode {
             { 1.0, 1.0, 1.0, 0.0, 0.0}
     };
 
-    int[] forward = new int[] {0,3};
-    int[] left = new int[] {2,0};
-    int[] right = new int[] {2,4};
-    int[] backward = new int[] {4,3};
+    int[] forward = new int[] {2,0};
+    int[] left = new int[] {0,2};
+    int[] right = new int[] {4,2};
+    int[] backward = new int[] {2,4};
 
     @Override
     public void runOpMode() throws InterruptedException {
