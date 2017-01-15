@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * Created by ninjas28 on 10/7/2016.
  */
 
-public class EPSShooterAutonomousBlueMove extends LinearOpMode {
+public class EPSShooterAutonomousMoveBlue extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
     DcMotor motorRight2;
@@ -97,16 +97,13 @@ public class EPSShooterAutonomousBlueMove extends LinearOpMode {
         }
 
         waitForStart();
-
+        TimeUnit.SECONDS.sleep(8);
+        move(west,750);
         crossbow.fire();
-        TimeUnit.SECONDS.sleep(1);
-        move(south, 1000);
-        move(east, 500);
-        move(southwest, 2500);
     }
 
     public void move(int[] direction, long time) {
-        for(long stop = System.nanoTime()+ TimeUnit.SECONDS.toNanos(time); stop>System.nanoTime();) {
+        for(long stop = System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(time); stop>System.nanoTime();) {
             motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
             motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
             motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);

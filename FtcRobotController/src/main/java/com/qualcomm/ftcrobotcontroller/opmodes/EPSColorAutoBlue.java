@@ -39,6 +39,8 @@ public class EPSColorAutoBlue extends LinearOpMode {
 
     final int precisionDivider = 3;
 
+    boolean foundBlue = false;
+
     final double[] yAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
     final double[] xAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
 
@@ -117,51 +119,61 @@ public class EPSColorAutoBlue extends LinearOpMode {
         rotator.gyro.resetZAxisIntegrator();
 
         //shoot both balls
-        crossbow.fire();
+        /*crossbow.fire();
         motorCollector.setPower(1);
         TimeUnit.SECONDS.sleep(5);
         motorCollector.setPower(0);
         crossbow.fire();
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(1);*/
 
         //knock the yoga ball off
         move(south, 1000);
         move(east, 500);
         move(southwest, 2500);
-        move(north, 1000);
+        move(north, 900);
         rotator.rotate(180);
+        TimeUnit.MILLISECONDS.sleep(500);
 
         //move to the wall
-        motorRight1.setPower(rearRightMatrix[east[0]][east[1]]);
-        motorLeft1.setPower(frontLeftMatrix[east[0]][east[1]]);
-        motorRight2.setPower(frontRightMatrix[east[0]][east[1]]);
-        motorLeft2.setPower(rearLeftMatrix[east[0]][east[1]]);
+        motorRight1.setPower(rearRightMatrix[east[0]][east[1]] / 3);
+        motorLeft1.setPower(frontLeftMatrix[east[0]][east[1]] / 3);
+        motorRight2.setPower(frontRightMatrix[east[0]][east[1]] / 3);
+        motorLeft2.setPower(rearLeftMatrix[east[0]][east[1]] / 3);
         while(!touch.isPressed()) {}
         stopDriving();
-        TimeUnit.MILLISECONDS.sleep(50);
+        TimeUnit.MILLISECONDS.sleep(100);
         move(west, 250);
 
         //align parallel to the wall
         int heading = rotator.gyro.getHeading();
-        if(heading <= 357 && heading > 180) {
+        if(heading <= 177 && heading > 0) {
             rotator.manuallyRotate(0, "right", 0.13);
-        } else if (heading >= 3 && heading <= 180) {
+        } else if (heading >= 183 && heading <= 359) {
             rotator.manuallyRotate(0, "left", 0.13);
         }
 
+        motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 4);
+        motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 4);
+        motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 4);
+        motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 4);
+
         //find beacon
         while(colour.blue() < 3) {}
-        for(int bluePrev = colour.blue(); colour.blue()-bluePrev > -1;) {
-            bluePrev = colour.blue();
+        if(colour.blue() > 3) {
+            foundBlue = true;
         }
-        stopDriving();
-
+        while(foundBlue) {
+            if (colour.blue() < 1) {
+                stopDriving();
+                break;
+            }
+        }
         //hit beacon
         move(east, 200);
         TimeUnit.MILLISECONDS.sleep(50);
-        rotator.manuallyRotate(357, "left", 0.15);
+        rotator.manuallyRotate(175, "left", 0.15);
         TimeUnit.MILLISECONDS.sleep(100);
-        rotator.manuallyRotate(0, "right", 0.15);
+        rotator.manuallyRotate(180, "right", 0.15);
 
     }
 

@@ -58,13 +58,21 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("NullOp", NullOp.class);
     manager.register("Debugger", DebugOp.class);
     manager.register("TeleOp", EPSTeleOp.class);
-    manager.register("ColorBlue", EPSColorAutoBlue.class);
+    //manager.register("ColorBlue", EPSColorAutoBlue.class);
     manager.register("ShooterAuto1Ball", EPSShooterAutonomous.class);
     manager.register("ShooterAuto2Balls", EPSShooterAutonomous2.class);
     manager.register("ShooterAuto1BallRedMove", EPSShooterAutonomousRedMove.class);
     manager.register("ShooterAuto1BallBlueMove", EPSShooterAutonomousBlueMove.class);
     manager.register("ShooterAuto2BallsRedMove", EPSShooterAutonomous2RedMove.class);
     manager.register("ShooterAuto2BallsBlueMove", EPSShooterAutonomous2BlueMove.class);
+    manager.register("ShooterAuto1BallMoveLeftRed", EPSShooterAutonomousMoveRed.class);
+    manager.register("ShooterAuto1BallMoveRightBlue", EPSShooterAutonomousMoveBlue.class);
+    manager.register("ShooterAuto1BallMoveLeftRedCap", EPSShooterAutonomousMoveRedCap.class);
+    manager.register("ShooterAuto1BallMoveRightBlueCap", EPSShooterAutonomousMoveBlueCap.class);
+    manager.register("ShooterAuto2BallsMoveLeftRed", EPSShooterAutonomous2MoveRed.class);
+    manager.register("ShooterAuto2BallsMoveRightBlue", EPSShooterAutonomous2MoveBlue.class);
+    manager.register("ShooterAuto2BallsMoveLeftRedCap", EPSShooterAutonomous2MoveRedCap.class);
+    manager.register("ShooterAuto2BallsMoveRightBlueCap", EPSShooterAutonomous2MoveBlueCap.class);
     //manager.register("Red Color Finder Autonomous", EPSColorAutoRed.class);
 
 

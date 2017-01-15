@@ -61,10 +61,14 @@ public class EPSShooterAutonomousRedMove extends LinearOpMode {
             { 1.0, 1.0, 1.0, 0.0, 0.0}
     };
 
-    int[] forward = new int[] {2,0};
-    int[] left = new int[] {0,2};
-    int[] right = new int[] {4,2};
-    int[] backward = new int[] {2,4};
+    int[] north = new int[]{2, 0};
+    int[] west = new int[]{0, 2};
+    int[] east = new int[]{4, 2};
+    int[] south = new int[]{2, 4};
+    int[] northeast = new int[]{4, 0};
+    int[] northwest = new int[]{0, 0};
+    int[] southeast = new int[]{4, 4};
+    int[] southwest = new int[]{0, 4};
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -96,13 +100,13 @@ public class EPSShooterAutonomousRedMove extends LinearOpMode {
 
         crossbow.fire();
         TimeUnit.SECONDS.sleep(1);
-        move(left, 500);
-        move(backward, 2800);
-        move(left, 500);
+        move(south, 1000);
+        move(west, 500);
+        move(southeast, 2500);
     }
 
     public void move(int[] direction, long time) {
-        for(long stop = System.nanoTime()+ TimeUnit.SECONDS.toNanos(time); stop>System.nanoTime();) {
+        for(long stop = System.nanoTime()+ TimeUnit.MILLISECONDS.toNanos(time); stop>System.nanoTime();) {
             motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
             motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
             motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);

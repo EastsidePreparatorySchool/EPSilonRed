@@ -61,10 +61,14 @@ public class EPSShooterAutonomous2BlueMove extends LinearOpMode {
             { 1.0, 1.0, 1.0, 0.0, 0.0}
     };
 
-    int[] forward = new int[] {2,0};
-    int[] left = new int[] {0,2};
-    int[] right = new int[] {4,2};
-    int[] backward = new int[] {2,4};
+    int[] north = new int[]{2, 0};
+    int[] west = new int[]{0, 2};
+    int[] east = new int[]{4, 2};
+    int[] south = new int[]{2, 4};
+    int[] northeast = new int[]{4, 0};
+    int[] northwest = new int[]{0, 0};
+    int[] southeast = new int[]{4, 4};
+    int[] southwest = new int[]{0, 4};
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -99,10 +103,10 @@ public class EPSShooterAutonomous2BlueMove extends LinearOpMode {
         TimeUnit.SECONDS.sleep(6);
         motorCollector.setPower(0);
         crossbow.fire();
-        TimeUnit.SECONDS.sleep(1);
-        move(backward, 1000);
-        move(left, 500);
-        move(backward, 2000);
+        TimeUnit.SECONDS.sleep(10);
+        move(south, 1100);
+        move(east, 500);
+        move(southwest, 1500);
     }
 
     public void move(int[] direction, long time) {
