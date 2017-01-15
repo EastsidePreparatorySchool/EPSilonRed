@@ -218,6 +218,15 @@ public class EPSTeleOp extends OpMode {
             }
         }
 
+        if(gamepad1.y == true) { //driver launch button
+            (new Thread(new ShooterThread(motorWinch, motorCollector, trigger, sc, shootLock))).start();
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         if(gamepad2.left_bumper == true) { //Servo up
             try {
                 shootLock.acquire();
