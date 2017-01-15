@@ -21,11 +21,11 @@ public class Catapult {
     public void fire() throws InterruptedException {
         isFiring = true;
         winch.setPower(0.6);
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.MILLISECONDS.sleep(1700);
         winch.setPower(0.0);
         t.setPosition(0.3);
         winch.setPower(-0.3);
-        TimeUnit.MILLISECONDS.sleep(1750);
+        TimeUnit.MILLISECONDS.sleep(1580);
         winch.setPower(0.0);
         t.setPosition(0.07);
         isFiring = false;
