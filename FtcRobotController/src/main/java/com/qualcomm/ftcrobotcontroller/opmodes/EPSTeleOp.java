@@ -26,6 +26,7 @@ public class EPSTeleOp extends OpMode {
     ServoController sc;
 
     private Semaphore shootLock = new Semaphore(1);
+    private Semaphore collectorLock = new Semaphore(1);
 
     int precisionModeDrive;
     int precisionModeArm;
@@ -43,32 +44,32 @@ public class EPSTeleOp extends OpMode {
 
     //Hypothetically you could create an identity matrix on which you perform operations to get each respective motor value, but this is less confusing to understand.
     final double[][] frontLeftMatrix = new double[][]{
-            { 0.0, 0.0,-1.0,-1.0,-1.0},
-            { 0.0, 0.0,-0.5,-1.0,-1.0},
+            { 0.0, 0.0,-1.0, 0.0,-1.0},
+            { 0.0, 0.0,-0.5, 0.0, 0.0},
             { 1.0, 0.5, 0.0,-0.5,-1.0},
-            { 1.0, 1.0, 0.5, 0.0, 0.0},
-            { 1.0, 1.0, 1.0, 0.0, 0.0}
+            { 0.0, 0.0, 0.5, 0.0, 0.0},
+            { 1.0, 0.0, 1.0, 0.0, 0.0}
     };
     final double[][] frontRightMatrix = new double[][]{
-            { 1.0, 1.0, 1.0, 0.0, 0.0},
-            { 1.0, 1.0, 0.5, 0.0, 0.0},
+            { 1.0, 0.0, 1.0, 0.0, 0.0},
+            { 0.0, 0.0, 0.5, 0.0, 0.0},
             { 1.0, 0.5, 0.0,-0.5,-1.0},
-            { 0.0, 0.0,-0.5,-1.0,-1.0},
-            { 0.0, 0.0,-1.0,-1.0,-1.0}
+            { 0.0, 0.0,-0.5, 0.0, 0.0},
+            { 0.0, 0.0,-1.0, 0.0,-1.0}
     };
     final double[][] rearLeftMatrix = new double[][]{
-            { 1.0, 1.0, 1.0, 0.0, 0.0},
-            { 1.0, 1.0, 0.5, 0.0, 0.0},
+            { 1.0, 0.0, 1.0, 0.0, 0.0},
+            { 0.0, 0.0, 0.5, 0.0, 0.0},
             { 1.0, 0.5, 0.0,-0.5,-1.0},
-            { 0.0, 0.0,-0.5,-1.0,-1.0},
-            { 0.0, 0.0,-1.0,-1.0,-1.0}
+            { 0.0, 0.0,-0.5, 0.0, 0.0},
+            { 0.0, 0.0,-1.0, 0.0,-1.0}
     };
     final double[][] rearRightMatrix = new double[][]{
-            { 0.0, 0.0,-1.0,-1.0,-1.0},
-            { 0.0, 0.0,-0.5,-1.0,-1.0},
+            { 0.0, 0.0,-1.0, 0.0,-1.0},
+            { 0.0, 0.0,-0.5, 0.0, 0.0},
             { 1.0, 0.5, 0.0,-0.5,-1.0},
-            { 1.0, 1.0, 0.5, 0.0, 0.0},
-            { 1.0, 1.0, 1.0, 0.0, 0.0}
+            { 0.0, 0.0, 0.5, 0.0, 0.0},
+            { 1.0, 0.0, 1.0, 0.0, 0.0}
     };
 
     int cyPrev = 2;
@@ -124,8 +125,14 @@ public class EPSTeleOp extends OpMode {
             }
         }
         if (cyPrev != cy) {
-            motorCollector.setPower(rotationMatrix[cy]);
-            cyPrev = cy;
+            try {
+                collectorLock.acquire();
+                motorCollector.setPower(rotationMatrix[cy]);
+                cyPrev = cy;
+                collectorLock.release();
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         //}
 
@@ -184,7 +191,7 @@ public class EPSTeleOp extends OpMode {
                 break;
             }
         }
-        if(ixPrev != ix || iyPrev != iy) {
+        if (ixPrev != ix || iyPrev != iy) {
             if (precisionModeDrive == 1) {
                 motorRight1.setPower((rearRightMatrix[ix][iy]) / precisionDivider);
                 motorLeft1.setPower((frontLeftMatrix[ix][iy]) / precisionDivider);
@@ -247,6 +254,13 @@ public class EPSTeleOp extends OpMode {
             }
         }
 
+        if(gamepad1.left_trigger > 0.6) {
+            cy = 0;
+        }
+        if(gamepad1.right_trigger > 0.6) {
+            cy = 4;
+        }
+
 		/*
 		 * Send telemetry data back to driver station. Note that if we are using
 		 * a legacy NXT-compatible motor controller, then the getPower() method
@@ -258,46 +272,4 @@ public class EPSTeleOp extends OpMode {
         telemetry.addData("right tgt pwr", "right pwr: " + String.format("%.2f", joy1x1));
         telemetry.addData("trigger pos", "trigger: " + String.format("%.2f", trigger.getPosition()));
     }
-
-    /*private void stopDriving() {
-        motorRight1.setPower(0);
-        motorLeft1.setPower(0);
-        motorRight2.setPower(0);
-        motorLeft2.setPower(0);
-    }*/
-    /*
-	 * This method scales the joystick input so for low joystick values, the
-	 * scaled value is less than linear.  This is to make it easier to drive
-	 * the robot more precisely at slower speeds.
-	 */
-    //UNUSED, CAN DELETE.
-    /* double scaleInput(double dVal)  {
-        double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
-                0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
-
-
-        // get the corresponding index for the scaleInput array.
-        int index = (int) (dVal * 16.0);
-
-        // index should be positive.
-        if (index < 0) {
-            index = -index;
-        }
-
-        // index cannot exceed size of array minus 1.
-        if (index > 16) {
-            index = 16;
-        }
-
-        // get value from the array.
-        double dScale = 0.0;
-        if (dVal < 0) {
-            dScale = -scaleArray[index];
-        } else {
-            dScale = scaleArray[index];
-        }
-
-        // return scaled value.
-        return dScale;
-    } */
 }

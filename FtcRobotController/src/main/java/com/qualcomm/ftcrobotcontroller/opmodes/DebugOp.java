@@ -17,8 +17,10 @@ public class DebugOp extends OpMode {
     DcMotor motorRight2;
     DcMotor motorLeft2;
 
-    ColorSensor color;
-    OpticalDistanceSensor dist;
+    ColorSensor leftcolor;
+    OpticalDistanceSensor leftdist;
+    ColorSensor rightcolor;
+    OpticalDistanceSensor rightdist;
     TouchSensor touch;
 
     final double[] rotationMatrix = new double[]{-0.2,-0.1, 0.0, 0.1, 0.2};
@@ -38,8 +40,10 @@ public class DebugOp extends OpMode {
     public void init() {
         GyroSensor gyro;
 
-        color = hardwareMap.colorSensor.get("color");
-        dist = hardwareMap.opticalDistanceSensor.get("dist");
+        leftcolor = hardwareMap.colorSensor.get("leftcolor");
+        leftdist = hardwareMap.opticalDistanceSensor.get("leftdist");
+        rightcolor = hardwareMap.colorSensor.get("rightcolor");
+        rightdist = hardwareMap.opticalDistanceSensor.get("rightdist");
         gyro = hardwareMap.gyroSensor.get("gyro");
         touch = hardwareMap.touchSensor.get("touch");
         motorRight1 = hardwareMap.dcMotor.get("motor_1a");
