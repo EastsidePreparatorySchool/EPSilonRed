@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/EPSilonRed.iml" filepath="$PROJECT_DIR$/EPSilonRed.iml" />
       <module fileurl="file://$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ftc_app-1.77.iml" filepath="$PROJECT_DIR$/ftc_app-1.77.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TeamCode/TeamCode.iml" filepath="$PROJECT_DIR$/TeamCode/TeamCode.iml" />
     </modules>
   </component>
 </project>
