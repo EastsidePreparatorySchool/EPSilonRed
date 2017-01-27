@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ninjas28 on 10/7/2016.
  */
-
+@Autonomous(name = "1Ball", group = "BallOnly")
 public class EPSShooterAutonomous extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
@@ -87,23 +88,5 @@ public class EPSShooterAutonomous extends LinearOpMode {
         waitForStart();
 
         crossbow.fire();
-    }
-
-    public void move(int[] direction, long time) {
-        for(long stop = System.nanoTime()+ TimeUnit.SECONDS.toNanos(time); stop>System.nanoTime();) {
-            motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
-            motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
-            motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);
-            motorLeft2.setPower(rearLeftMatrix[direction[0]][direction[1]]);
-        }
-        stopDriving();
-
-    }
-
-    public void stopDriving() {
-        motorRight1.setPower(rearRightMatrix[2][2]);
-        motorLeft1.setPower(frontLeftMatrix[2][2]);
-        motorRight2.setPower(frontRightMatrix[2][2]);
-        motorLeft2.setPower(rearLeftMatrix[2][2]);
     }
 }

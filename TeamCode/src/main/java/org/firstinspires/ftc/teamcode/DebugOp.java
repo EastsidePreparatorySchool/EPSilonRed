@@ -78,8 +78,8 @@ public class DebugOp extends OpMode {
     @Override
     public void loop() {
         //int blue = color.blue();
-        int red1 = leftcolor.red();
-        int red2 = rightcolor.red();
+        int color1 = leftcolor.blue();
+        int color2 = rightcolor.blue();
         //int heading = gyro.getHeading();
         int heading = rotator.gyro.getHeading();
         //int red = color.red();
@@ -88,9 +88,10 @@ public class DebugOp extends OpMode {
 
         //telemetry.addData("color sensor", "blue: " + String.format("%d", blue));
         telemetry.addData("gyro", "heading: " + String.format("%d", heading));
-        telemetry.addData("color", "red1: " + String.format("%d", red1));
-        telemetry.addData("color", "red2: " + String.format("%d", red2));
-        //telemetry.addData("dist", "lighting: " + String.format("%.2f", light));
+        telemetry.addData("color", "blue: " + String.format("%d", color1));
+        telemetry.addData("color2", "blue: " + String.format("%d", color2));
+        telemetry.addData("leftdist", "lighting: " + String.format("%.2f", leftdist.getLightDetected()));
+        telemetry.addData("rightdist", "lighting: " + String.format("%.2f", rightdist.getLightDetected()));
         //telemetry.addData("touch", "sense: " + touch.isPressed());
     }
 }

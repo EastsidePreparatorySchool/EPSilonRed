@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
@@ -14,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ninjas28 on 2016-10-28.
  */
-
+@Autonomous(name = "BlueEverything", group = "All")
 public class EPSColorAutoBlue extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorRight2;
@@ -25,21 +28,16 @@ public class EPSColorAutoBlue extends LinearOpMode {
     Servo trigger;
     ServoController sc;
 
-    ColorSensor colour;
-    OpticalDistanceSensor distSense;
+    ColorSensor leftcolor;
+    OpticalDistanceSensor leftdist;
+    ColorSensor rightcolor;
+    OpticalDistanceSensor rightdist;
     GyroSensor gyro;
 
     AutoRotator rotator;
     TouchSensor touch;
 
-    int precisionModeDrive = 0;
-    int precisionModeArm = 0;
-
-    int shootingHeading = 0;
-
     final int precisionDivider = 3;
-
-    boolean foundBlue = false;
 
     final double[] yAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
     final double[] xAxisMatrix = new double[]{-0.75, -0.30, 0.30, 0.75};
@@ -75,7 +73,6 @@ public class EPSColorAutoBlue extends LinearOpMode {
             {1.0, 1.0,  1.0,  0.0,  0.0}
     };
 
-    boolean hitBlack = false;
     int[] north = new int[]{2, 0};
     int[] west = new int[]{0, 2};
     int[] east = new int[]{4, 2};
@@ -85,10 +82,16 @@ public class EPSColorAutoBlue extends LinearOpMode {
     int[] southeast = new int[]{4, 4};
     int[] southwest = new int[]{0, 4};
 
+    boolean leftaligned = false;
+    boolean rightaligned = false;
+    boolean aligned = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        colour = hardwareMap.colorSensor.get("color");
-        distSense = hardwareMap.opticalDistanceSensor.get("dist");
+        leftcolor = hardwareMap.colorSensor.get("leftcolor");
+        leftdist = hardwareMap.opticalDistanceSensor.get("leftdist");
+        rightcolor = hardwareMap.colorSensor.get("rightcolor");
+        rightdist = hardwareMap.opticalDistanceSensor.get("rightdist");
         gyro = hardwareMap.gyroSensor.get("gyro");
         touch = hardwareMap.touchSensor.get("touch");
         motorCollector = hardwareMap.dcMotor.get("motor_coll");
@@ -98,6 +101,9 @@ public class EPSColorAutoBlue extends LinearOpMode {
         motorLeft2 = hardwareMap.dcMotor.get("motor_2a");
         motorWinch = hardwareMap.dcMotor.get("motor_win");
         trigger = hardwareMap.servo.get("trigger");
+
+        leftcolor.setI2cAddress(I2cAddr.create8bit(0x3c));
+        rightcolor.setI2cAddress(I2cAddr.create8bit(0x4c));
 
         sc = hardwareMap.servoController.get("Servo Controller 1");
         sc.pwmEnable();
@@ -117,6 +123,7 @@ public class EPSColorAutoBlue extends LinearOpMode {
 
         waitForStart();
         rotator.gyro.resetZAxisIntegrator();
+        TimeUnit.MILLISECONDS.sleep(2000);
 
         //shoot both balls
         /*crossbow.fire();
@@ -127,10 +134,10 @@ public class EPSColorAutoBlue extends LinearOpMode {
         TimeUnit.SECONDS.sleep(1);*/
 
         //knock the yoga ball off
-        move(south, 1000);
-        move(east, 500);
+        move(south, 1500);
+        move(east, 750);
         move(southwest, 2500);
-        move(north, 900);
+        move(north, 1000);
         rotator.rotate(180);
         TimeUnit.MILLISECONDS.sleep(500);
 
@@ -142,39 +149,45 @@ public class EPSColorAutoBlue extends LinearOpMode {
         while(!touch.isPressed()) {}
         stopDriving();
         TimeUnit.MILLISECONDS.sleep(100);
-        move(west, 250);
+        move(west, 300);
 
         //align parallel to the wall
-        int heading = rotator.gyro.getHeading();
-        if(heading <= 177 && heading > 0) {
-            rotator.manuallyRotate(0, "right", 0.13);
-        } else if (heading >= 183 && heading <= 359) {
-            rotator.manuallyRotate(0, "left", 0.13);
-        }
-
         motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 4);
         motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 4);
         motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 4);
         motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 4);
-
-        //find beacon
-        while(colour.blue() < 3) {}
-        if(colour.blue() > 3) {
-            foundBlue = true;
-        }
-        while(foundBlue) {
-            if (colour.blue() < 1) {
-                stopDriving();
-                break;
+        while(!leftaligned && !rightaligned) {
+            if(leftdist.getLightDetected() > 0.1) {
+                motorRight1.setPower(0);
+                motorRight2.setPower(0);
+                leftaligned = true;
+            }
+            if(rightdist.getLightDetected() > 0.1) {
+                motorLeft1.setPower(0);
+                motorLeft2.setPower(0);
+                rightaligned = true;
             }
         }
-        //hit beacon
-        move(east, 200);
-        TimeUnit.MILLISECONDS.sleep(50);
-        rotator.manuallyRotate(175, "left", 0.15);
-        TimeUnit.MILLISECONDS.sleep(100);
-        rotator.manuallyRotate(180, "right", 0.15);
+        rotator.gyro.calibrate();
+        while(rotator.gyro.isCalibrating()) {}
 
+        //move to beacon
+        move(south, 50);
+        move(east, 100);
+
+        //find the right color
+        int leftblue = leftcolor.blue();
+        int rightblue = rightcolor.blue();
+        if((leftblue - rightblue) > 3) {
+            move(north, 100);
+            move(east, 100);
+            move(west, 100);
+        }
+        if((rightblue - leftblue) > 3) {
+            move(south, 100);
+            move(east, 100);
+            move(west, 100);
+        }
     }
 
     private void move(int[] direction, long time) {

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  */
 
 @Autonomous(name = "EPSAutonomous", group = "EPSilon Red (8103)")
+@Disabled
 public class EPSMasterAutonomous extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
@@ -26,16 +28,16 @@ public class EPSMasterAutonomous extends LinearOpMode {
     Servo trigger;
     ServoController sc;
 
-    ColorSensor leftcolor;
-    OpticalDistanceSensor leftdist;
-    ColorSensor rightcolor;
-    OpticalDistanceSensor rightdist;
-    TouchSensor touch;
-    GyroSensor gyro;
+    private ColorSensor leftcolor;
+    private OpticalDistanceSensor leftdist;
+    private ColorSensor rightcolor;
+    private OpticalDistanceSensor rightdist;
+    private TouchSensor touch;
+    private GyroSensor gyro;
 
-    AutoDriver driveTrain;
-    AutoRotator rotator;
-    Catapult crossbow;
+    private AutoDriver driveTrain;
+    private AutoRotator rotator;
+    private Catapult crossbow;
 
     int[] north = new int[]{2, 0};
     int[] west = new int[]{0, 2};
@@ -45,6 +47,14 @@ public class EPSMasterAutonomous extends LinearOpMode {
     int[] northwest = new int[]{0, 0};
     int[] southeast = new int[]{4, 4};
     int[] southwest = new int[]{0, 4};
+
+    private String allianceColor = "";
+    private boolean capBallKnockOff = false;
+    private boolean beaconPushing = false;
+    private boolean shootBalls = false;
+    private int beacons = 0;
+    private int balls = 0;
+
 
     @Override
     public void runOpMode () {
@@ -74,6 +84,7 @@ public class EPSMasterAutonomous extends LinearOpMode {
         rotator.init();
 
         //IN HONOR OF HENRY MENG'S VALIANT HUMILIATION AND USAGE OF WHILE(TRUE)
+        //aka an infinite loop that breaks after one loop
         while(true) {
             motorLeft1.setDirection(DcMotor.Direction.FORWARD);
             motorRight1.setDirection(DcMotor.Direction.REVERSE);
@@ -84,6 +95,71 @@ public class EPSMasterAutonomous extends LinearOpMode {
             break;
         }
 
+        telemetry.addData("1","Alliance Color:" + allianceColor);
+        telemetry.addData("2","Cap Ball Knockoff:", Boolean.toString(capBallKnockOff));
+        telemetry.addLine();
+        telemetry.addData("3","Beacon Pushing:", Boolean.toString(beaconPushing));
+        telemetry.addData("4","Number of Beacons:", Integer.toString(beacons));
+        telemetry.addLine();
+        telemetry.addData("5","Ball Shooting:", Boolean.toString(shootBalls));
+        telemetry.addData("6","Number of Balls:", Integer.toString(balls));
+
+        while(!gamepad1.start) {
+            //choose blue alliance
+            if(gamepad1.x) {
+                allianceColor = "blue";
+                telemetry.update();
+            }
+            //choose red alliance
+            if(gamepad1.b) {
+                allianceColor = "red";
+                telemetry.update();
+            }
+            //Knock the cap ball off the center platform
+            if(gamepad1.dpad_up) {
+                capBallKnockOff = true;
+                telemetry.update();
+            }
+
+            //Shoot the balls
+            while(gamepad1.y) {
+                if(gamepad1.left_bumper) {
+                    balls--;
+                }
+                if(gamepad1.right_bumper) {
+                    balls++;
+                }
+                telemetry.update();
+            }
+            //Push the beacons
+            while(gamepad1.a) {
+                if(gamepad1.left_bumper) {
+                    beacons--;
+                }
+                if(gamepad1.right_bumper) {
+                    beacons++;
+                }
+                telemetry.update();
+            }
+        }
+
+        balls = Math.abs(balls);
+        if(balls > 0) {
+            shootBalls = true;
+            if(balls > 3) {
+                balls = 2;
+            }
+        }
+
+        beacons = Math.abs(beacons);
+        if(beacons > 0) {
+            beaconPushing = true;
+            if(beacons > 3) {
+                beacons = 2;
+            }
+        }
+
+        telemetry.update();
         waitForStart();
 
     }

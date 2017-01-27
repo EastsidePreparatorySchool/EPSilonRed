@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
@@ -14,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ninjas28 on 2016-10-28.
  */
-
+@Autonomous(name = "RedEverything", group = "All")
 public class EPSColorAutoRed extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorRight2;
@@ -25,17 +27,14 @@ public class EPSColorAutoRed extends LinearOpMode {
     Servo trigger;
     ServoController sc;
 
-    ColorSensor colour;
-    OpticalDistanceSensor distSense;
+    ColorSensor leftcolor;
+    OpticalDistanceSensor leftdist;
+    ColorSensor rightcolor;
+    OpticalDistanceSensor rightdist;
     GyroSensor gyro;
 
     AutoRotator rotator;
     TouchSensor touch;
-
-    int precisionModeDrive = 0;
-    int precisionModeArm = 0;
-
-    int shootingHeading = 0;
 
     final int precisionDivider = 3;
 
@@ -73,7 +72,6 @@ public class EPSColorAutoRed extends LinearOpMode {
             {1.0, 1.0,  1.0,  0.0,  0.0}
     };
 
-    boolean hitBlack = false;
     int[] north = new int[]{2, 0};
     int[] west = new int[]{0, 2};
     int[] east = new int[]{4, 2};
@@ -83,10 +81,15 @@ public class EPSColorAutoRed extends LinearOpMode {
     int[] southeast = new int[]{4, 4};
     int[] southwest = new int[]{0, 4};
 
+    boolean leftaligned = false;
+    boolean rightaligned = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        colour = hardwareMap.colorSensor.get("color");
-        distSense = hardwareMap.opticalDistanceSensor.get("dist");
+        leftcolor = hardwareMap.colorSensor.get("leftcolor");
+        leftdist = hardwareMap.opticalDistanceSensor.get("leftdist");
+        rightcolor = hardwareMap.colorSensor.get("rightcolor");
+        rightdist = hardwareMap.opticalDistanceSensor.get("rightdist");
         gyro = hardwareMap.gyroSensor.get("gyro");
         touch = hardwareMap.touchSensor.get("touch");
         motorCollector = hardwareMap.dcMotor.get("motor_coll");
@@ -96,6 +99,9 @@ public class EPSColorAutoRed extends LinearOpMode {
         motorLeft2 = hardwareMap.dcMotor.get("motor_2a");
         motorWinch = hardwareMap.dcMotor.get("motor_win");
         trigger = hardwareMap.servo.get("trigger");
+
+        leftcolor.setI2cAddress(I2cAddr.create8bit(0x3c));
+        rightcolor.setI2cAddress(I2cAddr.create8bit(0x4c));
 
         sc = hardwareMap.servoController.get("Servo Controller 1");
         sc.pwmEnable();
@@ -115,45 +121,71 @@ public class EPSColorAutoRed extends LinearOpMode {
 
         waitForStart();
         rotator.gyro.resetZAxisIntegrator();
+        TimeUnit.MILLISECONDS.sleep(2000);
 
-        rotator.manuallyRotate(shootingHeading, "left", 0.15);
-        crossbow.fire();
-        motorCollector.setPower(-1);
-        TimeUnit.SECONDS.sleep(4);
+        //shoot both balls
+        /*crossbow.fire();
+        motorCollector.setPower(1);
+        TimeUnit.SECONDS.sleep(5);
         motorCollector.setPower(0);
         crossbow.fire();
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.SECONDS.sleep(1);*/
+
+        //knock the yoga ball off
+        move(south, 1000);
         move(west, 500);
-        move(south, 2800);
-        move(west, 500);
+        move(southeast, 2500);
         move(north, 1000);
         rotator.rotate(180);
+        TimeUnit.MILLISECONDS.sleep(500);
 
-        motorRight1.setPower(rearRightMatrix[west[0]][west[1]]);
-        motorLeft1.setPower(frontLeftMatrix[west[0]][west[1]]);
-        motorRight2.setPower(frontRightMatrix[west[0]][west[1]]);
-        motorLeft2.setPower(rearLeftMatrix[west[0]][west[1]]);
+        //move to the wall
+        motorRight1.setPower(rearRightMatrix[west[0]][west[1]] / 3);
+        motorLeft1.setPower(frontLeftMatrix[west[0]][west[1]] / 3);
+        motorRight2.setPower(frontRightMatrix[west[0]][west[1]] / 3);
+        motorLeft2.setPower(rearLeftMatrix[west[0]][west[1]] / 3);
         while(!touch.isPressed()) {}
         stopDriving();
-        move(east, 500);
-        int heading = rotator.gyro.getHeading();
-        if(heading <= 355) {
-            rotator.manuallyRotate(0, "right", 0.15);
-        } else if (heading >= 5) {
-            rotator.manuallyRotate(0, "left", 0.15);
-        }
+        TimeUnit.MILLISECONDS.sleep(100);
+        move(east, 300);
 
-        motorRight1.setPower(rearRightMatrix[north[0]][north[1]]);
-        motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]]);
-        motorRight2.setPower(frontRightMatrix[north[0]][north[1]]);
-        motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]]);
-        while(colour.red() < 3) {}
-        for(int redPrev = colour.red(); colour.red()-redPrev > -1;) {
-            redPrev = colour.red();
+        //align parallel to the wall
+        motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 4);
+        motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 4);
+        motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 4);
+        motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 4);
+        while(!leftaligned && !rightaligned) {
+            if(leftdist.getLightDetected() > 0.1) {
+                motorRight1.setPower(0);
+                motorRight2.setPower(0);
+                leftaligned = true;
+            }
+            if(rightdist.getLightDetected() > 0.1) {
+                motorLeft1.setPower(0);
+                motorLeft2.setPower(0);
+                rightaligned = true;
+            }
         }
-        stopDriving();
-        move(east, 250);
-        rotator.manuallyRotate(357, "left", 0.15);
+        rotator.gyro.calibrate();
+        while(rotator.gyro.isCalibrating()) {}
+
+        //move to beacon
+        move(south, 50);
+        move(west, 100);
+
+        //find the right color
+        int leftred = leftcolor.red();
+        int rightred = rightcolor.red();
+        if((leftred - rightred) > 3) {
+            move(north, 100);
+            move(west, 100);
+            move(east, 100);
+        }
+        if((rightred - leftred) > 3) {
+            move(south, 100);
+            move(west, 100);
+            move(east, 100);
+        }
     }
 
 

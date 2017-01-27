@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ninjas28 on 10/7/2016.
  */
-
+@Autonomous(name = "1Ball RedCap SecondPos", group = "Ball+Cap")
 public class EPSShooterAutonomousMoveRedCap extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
