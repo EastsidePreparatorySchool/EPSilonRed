@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ninjas28 on 10/7/2016.
  */
-@Autonomous(name = "1Ball BlueCap", group = "Ball+Cap")
+@Autonomous(name = "1Ball BlueCap SecondPos", group = "Ball+Cap")
 public class EPSShooterAutonomousMoveBlueCap extends LinearOpMode {
     DcMotor motorRight1;
     DcMotor motorLeft1;
