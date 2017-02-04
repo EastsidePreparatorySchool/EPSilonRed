@@ -29,6 +29,44 @@ public class DebugOp extends OpMode {
 
     final double[] rotationMatrix = new double[]{-0.2,-0.1, 0.0, 0.1, 0.2};
 
+    final double[][] frontLeftMatrix = new double[][]{
+            {0.0, 0.0, -1.0, -1.0, -1.0},
+            {0.0, 0.0, -0.5, -1.0, -1.0},
+            {1.0, 0.5, 0.0, -0.5, -1.0},
+            {1.0, 1.0, 0.5, 0.0, 0.0},
+            {1.0, 1.0, 1.0, 0.0, 0.0}
+    };
+    final double[][] frontRightMatrix = new double[][]{
+            {1.0, 1.0, 1.0, 0.0, 0.0},
+            {1.0, 1.0, 0.5, 0.0, 0.0},
+            {1.0, 0.5, 0.0, -0.5, -1.0},
+            {0.0, 0.0, -0.5, -1.0, -1.0},
+            {0.0, 0.0, -1.0, -1.0, -1.0}
+    };
+    final double[][] rearLeftMatrix = new double[][]{
+            {1.0, 1.0, 1.0, 0.0, 0.0},
+            {1.0, 1.0, 0.5, 0.0, 0.0},
+            {1.0, 0.5, 0.0, -0.5, -1.0},
+            {0.0, 0.0, -0.5, -1.0, -1.0},
+            {0.0, 0.0, -1.0, -1.0, -1.0}
+    };
+    final double[][] rearRightMatrix = new double[][]{
+            {0.0, 0.0, -1.0, -1.0, -1.0},
+            {0.0, 0.0, -0.5, -1.0, -1.0},
+            {1.0, 0.5,  0.0, -0.5, -1.0},
+            {1.0, 1.0,  0.5,  0.0,  0.0},
+            {1.0, 1.0,  1.0,  0.0,  0.0}
+    };
+
+    int[] north = new int[]{2, 0};
+    int[] west = new int[]{0, 2};
+    int[] east = new int[]{4, 2};
+    int[] south = new int[]{2, 4};
+    int[] northeast = new int[]{4, 0};
+    int[] northwest = new int[]{0, 0};
+    int[] southeast = new int[]{4, 4};
+    int[] southwest = new int[]{0, 4};
+
     int fastleft = 0;
     int fastright = 4;
     int slowleft = 1;
@@ -39,6 +77,9 @@ public class DebugOp extends OpMode {
     int rxPrev = 2;
 
     AutoRotator rotator;
+
+    boolean leftaligned = false;
+    boolean rightaligned = false;
 
     @Override
     public void init() {
@@ -60,6 +101,7 @@ public class DebugOp extends OpMode {
 
         rotator = new AutoRotator(gyro, motorLeft1, motorLeft2, motorRight1, motorRight2);
         rotator.init();
+
     }
 
     @Override

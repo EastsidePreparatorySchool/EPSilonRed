@@ -77,10 +77,10 @@ public class EPSColorAutoBlue extends LinearOpMode {
     int[] west = new int[]{0, 2};
     int[] east = new int[]{4, 2};
     int[] south = new int[]{2, 4};
-    int[] northeast = new int[]{4, 0};
+    int[] northeast = new int[]{0, 4};
     int[] northwest = new int[]{0, 0};
     int[] southeast = new int[]{4, 4};
-    int[] southwest = new int[]{0, 4};
+    int[] southwest = new int[]{4, 0};
 
     boolean leftaligned = false;
     boolean rightaligned = false;
@@ -123,23 +123,24 @@ public class EPSColorAutoBlue extends LinearOpMode {
 
         waitForStart();
         rotator.gyro.resetZAxisIntegrator();
-        TimeUnit.MILLISECONDS.sleep(2000);
+        sleep(500);
 
         //shoot both balls
-        /*crossbow.fire();
-        motorCollector.setPower(1);
-        TimeUnit.SECONDS.sleep(5);
-        motorCollector.setPower(0);
         crossbow.fire();
-        TimeUnit.SECONDS.sleep(1);*/
+        /*motorCollector.setPower(1);
+        TimeUnit.MILLISECONDS.sleep(3000);
+        motorCollector.setPower(0);
+        crossbow.fire();*/
+        sleep(1000);
 
         //knock the yoga ball off
-        move(south, 1500);
-        move(east, 750);
+        /*move(south, 1300);
+        move(east, 700);
         move(southwest, 2500);
-        move(north, 1000);
-        rotator.rotate(180);
-        TimeUnit.MILLISECONDS.sleep(500);
+        move(north, 1000);*/
+        move(northeast, 3200);
+        rotator.manuallyRotate(170, "left", 0.15);
+        sleep(500);
 
         //move to the wall
         motorRight1.setPower(rearRightMatrix[east[0]][east[1]] / 3);
@@ -148,55 +149,150 @@ public class EPSColorAutoBlue extends LinearOpMode {
         motorLeft2.setPower(rearLeftMatrix[east[0]][east[1]] / 3);
         while(!touch.isPressed()) {}
         stopDriving();
-        TimeUnit.MILLISECONDS.sleep(100);
+        sleep(100);
         move(west, 300);
+        //rotator.rotate(170);
 
         //align parallel to the wall
-        motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 4);
-        motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 4);
-        motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 4);
-        motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 4);
+        motorRight1.setPower((rearRightMatrix[north[0]][north[1]]) / 7);
+        motorLeft1.setPower((frontLeftMatrix[north[0]][north[1]]) / 8);
+        motorRight2.setPower((frontRightMatrix[north[0]][north[1]]) / 7);
+        motorLeft2.setPower((rearLeftMatrix[north[0]][north[1]]) / 8);
         while(!leftaligned && !rightaligned) {
-            if(leftdist.getLightDetected() > 0.1) {
+            if(rightdist.getLightDetected() > 0.08) {
                 motorRight1.setPower(0);
                 motorRight2.setPower(0);
                 leftaligned = true;
             }
-            if(rightdist.getLightDetected() > 0.1) {
+            if(leftdist.getLightDetected() > 0.08) {
+                motorLeft1.setPower(0);
+                motorLeft2.setPower(0);
+                rightaligned = true;
+            }
+            waitOneFullHardwareCycle();
+        }
+        rotator.manuallyRotate(170, "right", 0.15);
+        sleep(1000);
+        //rotator.gyro.calibrate();
+        //while(rotator.gyro.isCalibrating()) {}
+
+        //move to beacon
+        /*move(south, 250);
+        move(east, 150);/
+        */
+        //find the right color
+        boolean thingthatisrequiredtoworkproperly = false;
+
+        int leftblue = leftcolor.blue();
+        int rightblue = rightcolor.blue();
+        if(rightblue >= 3) {
+            move(east, 500, 3);
+            move(west, 500, 3);
+            thingthatisrequiredtoworkproperly = true;
+        } else {
+            motorRight1.setPower((rearRightMatrix[south[0]][south[1]]) / 6);
+            motorLeft1.setPower((frontLeftMatrix[south[0]][south[1]]) / 6);
+            motorRight2.setPower((frontRightMatrix[south[0]][south[1]]) / 6);
+            motorLeft2.setPower((rearLeftMatrix[south[0]][south[1]]) / 6);
+            while(leftblue < 3) {
+                leftblue = leftcolor.blue();
+            }
+            stopDriving();
+            move(north, 50, 3);
+            move(east, 500, 3);
+            move(west, 500, 3);
+            rightaligned = false;
+            leftaligned = false;
+        }
+        if(thingthatisrequiredtoworkproperly) {
+            motorRight1.setPower((rearRightMatrix[north[0]][north[1]]) / 8);
+            motorLeft1.setPower((frontLeftMatrix[north[0]][north[1]]) / 8);
+            motorRight2.setPower((frontRightMatrix[north[0]][north[1]]) / 8);
+            motorLeft2.setPower((rearLeftMatrix[north[0]][north[1]]) / 8);
+            while (!leftaligned && !rightaligned) {
+                if (rightdist.getLightDetected() > 0.1) {
+                    motorRight1.setPower(0);
+                    motorRight2.setPower(0);
+                    leftaligned = true;
+                }
+                if (leftdist.getLightDetected() > 0.1) {
+                    motorLeft1.setPower(0);
+                    motorLeft2.setPower(0);
+                    rightaligned = true;
+                }
+            }
+        }
+        for(long stop = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(1500); stop > System.nanoTime();) {
+            motorRight1.setPower(rearRightMatrix[north[0]][north[1]] / 3);
+            motorLeft1.setPower(frontLeftMatrix[north[0]][north[1]] / 5);
+            motorRight2.setPower(frontRightMatrix[north[0]][north[1]] / 3);
+            motorLeft2.setPower(rearLeftMatrix[north[0]][north[1]] / 5);
+        }
+        stopDriving();
+        leftaligned = false;
+        rightaligned = false;
+        motorRight1.setPower((rearRightMatrix[north[0]][north[1]]) / 8);
+        motorLeft1.setPower((frontLeftMatrix[north[0]][north[1]]) / 8);
+        motorRight2.setPower((frontRightMatrix[north[0]][north[1]]) / 8);
+        motorLeft2.setPower((rearLeftMatrix[north[0]][north[1]]) / 8);
+        while(!leftaligned && !rightaligned) {
+            if(rightdist.getLightDetected() > 0.08) {
+                motorRight1.setPower(0);
+                motorRight2.setPower(0);
+                leftaligned = true;
+            }
+            if(leftdist.getLightDetected() > 0.08) {
                 motorLeft1.setPower(0);
                 motorLeft2.setPower(0);
                 rightaligned = true;
             }
         }
-        rotator.gyro.calibrate();
-        while(rotator.gyro.isCalibrating()) {}
-
-        //move to beacon
-        move(south, 50);
-        move(east, 100);
-
-        //find the right color
-        int leftblue = leftcolor.blue();
-        int rightblue = rightcolor.blue();
-        if((leftblue - rightblue) > 3) {
-            move(north, 100);
-            move(east, 100);
-            move(west, 100);
-        }
-        if((rightblue - leftblue) > 3) {
-            move(south, 100);
-            move(east, 100);
-            move(west, 100);
+        move(north, 500, 2);
+        motorRight1.setPower(rearRightMatrix[east[0]][east[1]] / 3);
+        motorLeft1.setPower(frontLeftMatrix[east[0]][east[1]] / 3);
+        motorRight2.setPower(frontRightMatrix[east[0]][east[1]] / 3);
+        motorLeft2.setPower(rearLeftMatrix[east[0]][east[1]] / 3);
+        while(!touch.isPressed()) {}
+        stopDriving();
+        sleep(100);
+        move(west, 300);
+        move(south, 400, 2);
+        leftblue = leftcolor.blue();
+        rightblue = rightcolor.blue();
+        if(rightblue >= 3) {
+            move(east, 500, 3);
+            move(west, 500, 3);
+        } else {
+            motorRight1.setPower((rearRightMatrix[south[0]][south[1]]) / 6);
+            motorLeft1.setPower((frontLeftMatrix[south[0]][south[1]]) / 6);
+            motorRight2.setPower((frontRightMatrix[south[0]][south[1]]) / 6);
+            motorLeft2.setPower((rearLeftMatrix[south[0]][south[1]]) / 6);
+            while(leftblue < 3) {
+                leftblue = leftcolor.blue();
+            }
+            stopDriving();
+            move(north, 50, 3);
+            move(east, 500, 3);
+            move(west, 500, 3);
         }
     }
 
     private void move(int[] direction, long time) {
-        for(long stop = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(time); stop > System.nanoTime();) {
-            motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
-            motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
-            motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);
-            motorLeft2.setPower(rearLeftMatrix[direction[0]][direction[1]]);
-        }
+        motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]]);
+        motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]]);
+        motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]]);
+        motorLeft2.setPower(rearLeftMatrix[direction[0]][direction[1]]);
+        sleep(time);
+        stopDriving();
+
+    }
+
+    private void move(int[] direction, long time, int modifier) {
+        motorRight1.setPower(rearRightMatrix[direction[0]][direction[1]] / modifier);
+        motorLeft1.setPower(frontLeftMatrix[direction[0]][direction[1]] / modifier);
+        motorRight2.setPower(frontRightMatrix[direction[0]][direction[1]] / modifier);
+        motorLeft2.setPower(rearLeftMatrix[direction[0]][direction[1]] / modifier);
+        sleep(time);
         stopDriving();
 
     }
